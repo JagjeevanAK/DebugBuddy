@@ -3,10 +3,6 @@ import { createGroq } from '@ai-sdk/groq';
 import { getApiKey } from "../lib/getapi";
 import { ProcessedPrompt, PromptMetadata } from "../prompt/types";
 
-const groq = createGroq({
-    apiKey: String(getApiKey())
-});
-
 interface ProviderResponse {
     text: string;
     metadata?: PromptMetadata;
@@ -60,13 +56,20 @@ export const groqTool = async (prompt: object | ProcessedPrompt | string): Promi
     }
 
     try {
-        console.log(`Groq processing ${promptType || 'unknown'} task`);
+        // Get API key dynamically for each request
+        const apiKey = getApiKey();
+        if (!apiKey) {
+            throw new Error('Groq API key not configured. Please set your API key using the "Set API Key" command.');
+        }
+
+        const groq = createGroq({
+            apiKey: String(apiKey)
+        });
+
         const res = await generateText({
             model: groq("llama-3.3-70b-versatile") as any,
             prompt: promptText,
         });
-
-        console.log(`Groq response for ${promptType || 'unknown'} task:`, res.text);
 
         return {
             text: res.text,

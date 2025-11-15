@@ -36,10 +36,13 @@ export class PromptLoader implements IPromptLoader {
             ];
 
             let schemaContent: string | null = null;
+            let foundPath: string | null = null;
+            
             for (const schemaPath of possiblePaths) {
                 try {
                     if (fs.existsSync(schemaPath)) {
                         schemaContent = fs.readFileSync(schemaPath, 'utf8');
+                        foundPath = schemaPath;
                         break;
                     }
                 } catch (err) {
@@ -50,11 +53,11 @@ export class PromptLoader implements IPromptLoader {
             if (schemaContent) {
                 this.schema = JSON.parse(schemaContent);
             } else {
-                throw new Error('Schema file not found in any expected location');
+                // Use fallback schema without throwing error
+                this.schema = this.getBasicSchema();
             }
         } catch (error) {
-            console.error('Failed to load prompt schema:', error);
-            // Fallback to basic schema if file not found
+            // Silently fall back to basic schema
             this.schema = this.getBasicSchema();
         }
     }

@@ -37,7 +37,6 @@ export const setApiKey = vscode.commands.registerCommand('DebugBuddy.setApiKey',
         }
     });
     if (apikey) {
-        console.log(apikey);
         await vscode.workspace.getConfiguration('DebugBuddy').update('apiKey', apikey, vscode.ConfigurationTarget.Global);
         vscode.window.showInformationMessage('API key stored successfully!');
     } else {

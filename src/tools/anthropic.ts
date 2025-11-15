@@ -3,10 +3,6 @@ import { createAnthropic } from '@ai-sdk/anthropic';
 import { getApiKey } from "../lib/getapi";
 import { ProcessedPrompt, PromptMetadata } from "../prompt/types";
 
-const anthropic = createAnthropic({
-    apiKey: String(getApiKey())
-});
-
 interface ProviderResponse {
     text: string;
     metadata?: PromptMetadata;
@@ -60,12 +56,20 @@ export const anthropicTool = async (prompt: object | ProcessedPrompt | string): 
     }
 
     try {
+        // Get API key dynamically for each request
+        const apiKey = getApiKey();
+        if (!apiKey) {
+            throw new Error('Anthropic API key not configured. Please set your API key using the "Set API Key" command.');
+        }
+
+        const anthropic = createAnthropic({
+            apiKey: String(apiKey)
+        });
+
         const res = await generateText({
             model: anthropic("claude-3-5-sonnet-latest"),
             prompt: promptText
         });
-        
-        console.log(`Anthropic response for ${promptType || 'unknown'} task:`, res.text);
         
         return {
             text: res.text,

@@ -32,9 +32,9 @@ export class MemoryMonitor {
     private maxSnapshots: number = 100;
     private monitoringInterval: NodeJS.Timeout | null = null;
     private thresholds: MemoryThresholds = {
-        warning: 100,   // 100MB
-        critical: 200,  // 200MB
-        cleanup: 150    // 150MB
+        warning: 512,   // 512MB - reasonable for VS Code extensions
+        critical: 1024, // 1GB - critical threshold
+        cleanup: 768    // 768MB - trigger cleanup
     };
     private components: Map<string, ComponentMemoryUsage> = new Map();
     private cleanupCallbacks: Map<string, () => void> = new Map();
@@ -54,7 +54,7 @@ export class MemoryMonitor {
     /**
      * Start memory monitoring
      */
-    startMonitoring(intervalMs: number = 30000): void {
+    startMonitoring(intervalMs: number = 300000): void { // 5 minutes instead of 30 seconds
         if (this.isMonitoring) {
             return;
         }
@@ -65,11 +65,14 @@ export class MemoryMonitor {
             this.checkThresholds();
         }, intervalMs);
 
-        promptErrorHandler.logError(
-            PromptError.CONFIGURATION_ERROR,
-            'Memory monitoring started',
-            { intervalMs, thresholds: this.thresholds }
-        );
+        // Only log in development mode
+        if (process.env.NODE_ENV === 'development') {
+            promptErrorHandler.logError(
+                PromptError.CONFIGURATION_ERROR,
+                'Memory monitoring started',
+                { intervalMs, thresholds: this.thresholds }
+            );
+        }
     }
 
     /**
@@ -170,11 +173,14 @@ export class MemoryMonitor {
             this.cleanupCallbacks.set(name, cleanupCallback);
         }
 
-        promptErrorHandler.logError(
-            PromptError.CONFIGURATION_ERROR,
-            `Registered component for memory tracking: ${name}`,
-            { hasCleanupCallback: !!cleanupCallback }
-        );
+        // Only log in development mode
+        if (process.env.NODE_ENV === 'development') {
+            promptErrorHandler.logError(
+                PromptError.CONFIGURATION_ERROR,
+                `Registered component for memory tracking: ${name}`,
+                { hasCleanupCallback: !!cleanupCallback }
+            );
+        }
     }
 
     /**

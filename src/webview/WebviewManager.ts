@@ -114,12 +114,7 @@ export class WebviewManager implements IWebviewManager {
             // Attempt to display in webview
             this.displayResponse(content, fileName);
             
-            // If we get here, webview display was successful
-            this.errorLogger.logError('displayResponseWithFallback', new Error('Webview display successful'), false, { 
-                fileName, 
-                contentLength: content.length,
-                operation: 'success'
-            });
+            // Success - no need to log as this is the expected behavior
 
         } catch (error) {
             // Determine if this is a critical error that should disable webview temporarily

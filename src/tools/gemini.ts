@@ -3,10 +3,6 @@ import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { getApiKey } from "../lib/getapi";
 import { ProcessedPrompt, PromptMetadata } from "../prompt/types";
 
-const google = createGoogleGenerativeAI({
-    apiKey: String(getApiKey())
-});
-
 interface ProviderResponse {
     text: string;
     metadata?: PromptMetadata;
@@ -60,13 +56,20 @@ export const geminiTool = async (prompt: object | ProcessedPrompt | string): Pro
     }
 
     try {
-        console.log(`Gemini processing ${promptType || 'unknown'} task`);
+        // Get API key dynamically for each request
+        const apiKey = getApiKey();
+        if (!apiKey) {
+            throw new Error('Gemini API key not configured. Please set your API key using the "Set API Key" command.');
+        }
+
+        const google = createGoogleGenerativeAI({
+            apiKey: String(apiKey)
+        });
+
         const res = await generateText({
-            model: google("models/gemini-2.5-flash"),
+            model: google("gemini-2.5-flash"),
             prompt: promptText,
         });
-        
-        console.log(`Gemini response for ${promptType || 'unknown'} task:`, res.text);
         
         return {
             text: res.text,

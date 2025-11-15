@@ -3,10 +3,6 @@ import { createXai } from '@ai-sdk/xai';
 import { getApiKey } from "../lib/getapi";
 import { ProcessedPrompt, PromptMetadata } from "../prompt/types";
 
-const xai = createXai({
-    apiKey: String(getApiKey()),
-});
-
 interface ProviderResponse {
     text: string;
     metadata?: PromptMetadata;
@@ -60,12 +56,20 @@ export const xaiTool = async (prompt: object | ProcessedPrompt | string): Promis
     }
 
     try {
+        // Get API key dynamically for each request
+        const apiKey = getApiKey();
+        if (!apiKey) {
+            throw new Error('XAI API key not configured. Please set your API key using the "Set API Key" command.');
+        }
+
+        const xai = createXai({
+            apiKey: String(apiKey),
+        });
+
         const res = await generateText({
             model: xai("grok-3-beta"),
             prompt: promptText
         });
-        
-        console.log(`XAI response for ${promptType || 'unknown'} task:`, res.text);
         
         return {
             text: res.text,

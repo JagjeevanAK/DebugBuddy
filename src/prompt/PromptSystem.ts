@@ -75,9 +75,17 @@ export class PromptSystem {
      * Load built-in prompt templates
      */
     private async loadBuiltInPrompts(): Promise<void> {
+        // When bundled with esbuild, __dirname points to dist/
+        // Templates are copied to dist/templates by the build script
         const templatesDir = path.join(__dirname, 'templates');
         
         try {
+            // Check if templates directory exists
+            if (!fs.existsSync(templatesDir)) {
+                console.warn(`Templates directory not found at: ${templatesDir}`);
+                return;
+            }
+
             // Load JSON prompt files (exclude schema files)
             const files = fs.readdirSync(templatesDir);
             const jsonFiles = files.filter(file => file.endsWith('.json') && !file.includes('schema'));

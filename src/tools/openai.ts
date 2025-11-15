@@ -3,11 +3,6 @@ import { createOpenAI } from '@ai-sdk/openai';
 import { getApiKey } from "../lib/getapi";
 import { ProcessedPrompt, PromptMetadata } from "../prompt/types";
 
-const openai = createOpenAI({
-    apiKey: String(getApiKey()),
-    compatibility: 'strict', 
-});
-
 interface ProviderResponse {
     text: string;
     metadata?: PromptMetadata;
@@ -61,12 +56,21 @@ export const openaiTool = async (prompt: object | ProcessedPrompt | string): Pro
     }
 
     try {
+        // Get API key dynamically for each request
+        const apiKey = getApiKey();
+        if (!apiKey) {
+            throw new Error('OpenAI API key not configured. Please set your API key using the "Set API Key" command.');
+        }
+
+        const openai = createOpenAI({
+            apiKey: String(apiKey),
+            compatibility: 'strict',
+        });
+
         const res = await generateText({
-            model: openai("o3-mini"),
+            model: openai("gpt-4o-mini"),
             prompt: promptText
         });
-        
-        console.log(`OpenAI response for ${promptType || 'unknown'} task:`, res.text);
         
         return {
             text: res.text,
