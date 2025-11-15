@@ -198,7 +198,6 @@ export class PromptLoader implements IPromptLoader {
                 );
             }
 
-            // Add file metadata
             const stats = await fs.promises.stat(filePath);
             if (!promptData.last_modified) {
                 promptData.last_modified = stats.mtime.toISOString().split('T')[0];
@@ -298,7 +297,6 @@ export class PromptLoader implements IPromptLoader {
      * Perform additional custom validations beyond schema
      */
     private performCustomValidations(promptData: any, result: ValidationResult, filePath?: string): void {
-        // Check for required template fields
         if (promptData.template) {
             if (!promptData.template.task || promptData.template.task.trim() === '') {
                 result.errors.push('Template task cannot be empty');
@@ -316,7 +314,6 @@ export class PromptLoader implements IPromptLoader {
                 result.isValid = false;
             }
 
-            // Check for variable references in instructions
             if (promptData.template.variables && promptData.template.instructions) {
                 const variablePattern = /\$\{(\w+)\}/g;
                 const referencedVars = new Set<string>();
@@ -328,14 +325,12 @@ export class PromptLoader implements IPromptLoader {
 
                 const declaredVars = new Set(promptData.template.variables);
 
-                // Check for undeclared variables
                 for (const referencedVar of referencedVars) {
                     if (!declaredVars.has(referencedVar)) {
                         result.warnings.push(`Variable '${referencedVar}' is referenced but not declared in variables array`);
                     }
                 }
 
-                // Check for unused declared variables
                 for (const declaredVar of declaredVars) {
                     if (!referencedVars.has(declaredVar as string)) {
                         result.warnings.push(`Variable '${declaredVar}' is declared but not used in instructions`);
@@ -354,7 +349,6 @@ export class PromptLoader implements IPromptLoader {
             result.warnings.push('Version should follow semantic versioning format (x.y.z)');
         }
 
-        // Check for schema version compatibility
         if (promptData.schema_version && promptData.schema_version !== '1.0.0') {
             result.warnings.push(`Schema version '${promptData.schema_version}' may not be fully compatible`);
         }
@@ -525,7 +519,6 @@ export class PromptLoader implements IPromptLoader {
 
             metadata.exists = true;
 
-            // Check if directory is readable
             try {
                 await fs.promises.access(directory, fs.constants.R_OK);
                 metadata.readable = true;
@@ -533,7 +526,6 @@ export class PromptLoader implements IPromptLoader {
                 return metadata;
             }
 
-            // Get directory stats
             const stats = await fs.promises.stat(directory);
             metadata.lastModified = stats.mtime;
 

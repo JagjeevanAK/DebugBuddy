@@ -19,7 +19,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "DebugBuddy" is now active!');
 
 	// Initialize API key cache manager
-	// Note: Cache uses lazy initialization, so no immediate setup needed
+	// Cache uses lazy initialization; accessing it will trigger initialization. Avoid eager setup to reduce startup impact.
 	try {
 		// Test cache initialization by checking if it's accessible
 		apiKeyCache.isInitialized();

@@ -240,7 +240,6 @@ export class OptimizedTemplateEngine extends TemplateEngine implements ITemplate
      * Generate cache key for substitution result
      */
     private generateCacheKey(promptId: string, variables: VariableMap): string {
-        // Create a hash of the variables for caching
         const relevantVars = {
             code: variables.code?.slice(0, 100) || '', // First 100 chars
             language: variables.language || '',
@@ -261,13 +260,11 @@ export class OptimizedTemplateEngine extends TemplateEngine implements ITemplate
             return null;
         }
         
-        // Check if cache is still valid
         if (Date.now() - cached.timestamp > this.maxCacheAge) {
             delete this.substitutionCache[cacheKey];
             return null;
         }
         
-        // Check if variables match (simple comparison for key variables)
         if (!this.variablesMatch(cached.variables, variables)) {
             return null;
         }
@@ -378,7 +375,6 @@ export class OptimizedTemplateEngine extends TemplateEngine implements ITemplate
     private cleanupSubstitutionCache(): void {
         const entries = Object.entries(this.substitutionCache);
         
-        // Sort by timestamp and remove oldest half
         entries.sort(([, a], [, b]) => a.timestamp - b.timestamp);
         const toRemove = entries.slice(0, Math.floor(entries.length / 2));
         
@@ -481,7 +477,6 @@ export class OptimizedTemplateEngine extends TemplateEngine implements ITemplate
             try {
                 return JSON.parse(JSON.stringify(obj));
             } catch {
-                // Fallback to manual cloning
             }
         }
 

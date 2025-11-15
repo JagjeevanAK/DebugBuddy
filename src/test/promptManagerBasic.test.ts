@@ -73,7 +73,6 @@ suite('PromptManager Basic Integration Tests', () => {
     });
 
     test('should validate prompt integrity', async () => {
-        // Add a test prompt
         const testPrompt: JsonPrompt = {
             id: 'test-prompt',
             name: 'Test Prompt',
@@ -145,7 +144,6 @@ suite('PromptManager Basic Integration Tests', () => {
     test('should verify JSON-only behavior without legacy fallback', async () => {
         await promptManager.initialize();
         
-        // Verify no legacy methods exist
         assert.strictEqual(typeof (promptManager as any).createLegacyPrompt, 'undefined', 'Should not have createLegacyPrompt method');
         
         // Clear prompts and verify immediate error without fallback attempts
@@ -238,7 +236,6 @@ suite('PromptManager Basic Integration Tests', () => {
     test('should handle validation errors without legacy fallback', async () => {
         await promptManager.initialize();
 
-        // Add an invalid prompt
         const invalidPrompt = {
             id: 'invalid-basic-test',
             name: 'Invalid Basic Test',

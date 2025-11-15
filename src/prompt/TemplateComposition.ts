@@ -104,7 +104,6 @@ export class TemplateComposition {
             }
         };
 
-        // Extract inheritance config from prompt metadata or use provided config
         const config = inheritanceConfig || this.extractInheritanceConfig(prompt);
 
         if (!config) {
@@ -155,7 +154,6 @@ export class TemplateComposition {
             throw new Error(`Parent template not found: ${parentId}`);
         }
 
-        // Check for circular inheritance
         if (composed.inheritance!.inheritanceChain.includes(parentId)) {
             throw new Error(`Circular inheritance detected: ${parentId}`);
         }
@@ -192,7 +190,6 @@ export class TemplateComposition {
                 continue;
             }
 
-            // Check dependencies
             if (fragment.dependencies) {
                 for (const dep of fragment.dependencies) {
                     if (!this.fragments.has(dep) && !this.baseTemplates.has(dep)) {
@@ -241,7 +238,6 @@ export class TemplateComposition {
         const finalKey = targetPath[targetPath.length - 1];
         let sourceValue = rule.value;
 
-        // Get source value if specified
         if (rule.source) {
             sourceValue = this.getValueFromPath(composed.template, rule.source);
         }
@@ -366,12 +362,10 @@ export class TemplateComposition {
      * Extract inheritance configuration from prompt metadata
      */
     private extractInheritanceConfig(prompt: JsonPrompt): InheritanceConfig | null {
-        // Check if inheritance config is stored in metadata
         if (prompt.metadata && (prompt.metadata as any).inheritance) {
             return (prompt.metadata as any).inheritance;
         }
 
-        // Check for inheritance markers in description or other fields
         if (prompt.description.includes('@extends:')) {
             const match = prompt.description.match(/@extends:\s*([^\s]+)/);
             if (match) {
@@ -519,7 +513,6 @@ export class TemplateComposition {
             if (template.template[field] !== undefined) {
                 (fragment as any)[field] = template.template[field];
                 
-                // Extract variables from this field
                 if (field === 'variables' && Array.isArray(template.template[field])) {
                     variables.push(...(template.template[field] as string[]));
                 }

@@ -238,7 +238,6 @@ export class PromptHotReloader {
             let prompt: JsonPrompt | undefined;
 
             if (eventType === 'rename') {
-                // Check if file exists to determine if it was added or deleted
                 if (fs.existsSync(filePath)) {
                     changeType = 'added';
                     prompt = await this.promptLoader.loadPromptFromFile(filePath);
@@ -348,7 +347,8 @@ export class PromptHotReloader {
         const activeWatchers = Array.from(this.watchedDirectories.values())
             .filter(watched => watched.watcher !== null).length;
 
-        // Note: In a real implementation, you might want to track recent activity
+        // We intentionally omit tracking recentActivity to keep the hot-reloader memory-light.
+        // This can be enabled by consumers if detailed audit trails are required.
         const recentActivity: FileChangeEvent[] = [];
 
         return {
@@ -405,13 +405,11 @@ export class PromptHotReloader {
         };
 
         try {
-            // Create test file
             await fs.promises.writeFile(testFilePath, JSON.stringify(testPrompt, null, 2));
             
             // Wait for hot reload to process
             await new Promise(resolve => setTimeout(resolve, this.debounceDelay + 100));
             
-            // Check if prompt was loaded
             const loaded = this.cache.get('hot-reload-test');
             
             // Clean up test file

@@ -35,7 +35,6 @@ suite('LLM Provider Integration Tests', () => {
         };
 
         test('should properly structure ProcessedPrompt content', () => {
-            // Test that the ProcessedPrompt structure is correctly formed
             assert.strictEqual(typeof mockProcessedPrompt.content, 'object');
             assert.strictEqual((mockProcessedPrompt.content as any).task, 'code_review');
             assert.strictEqual(typeof (mockProcessedPrompt.content as any).instructions, 'string');
@@ -44,16 +43,13 @@ suite('LLM Provider Integration Tests', () => {
         });
 
         test('should handle ProcessedPrompt serialization', () => {
-            // Test that we can serialize the prompt content properly
             const content = mockProcessedPrompt.content as any;
             
-            // Verify all required fields are present
             assert.ok(content.task);
             assert.ok(content.instructions);
             assert.ok(content.context);
             assert.ok(content.output_format);
             
-            // Verify context contains expected fields
             assert.strictEqual(content.context.language, 'typescript');
             assert.strictEqual(content.context.filePath, 'test.ts');
             assert.ok(content.context.code);
@@ -66,13 +62,11 @@ suite('LLM Provider Integration Tests', () => {
         const stringPrompt = 'Simple string prompt for testing';
 
         test('should handle string prompts correctly', () => {
-            // Test that string prompts are handled as expected
             assert.strictEqual(typeof stringPrompt, 'string');
             assert.ok(stringPrompt.length > 0);
         });
 
         test('should preserve string prompt content', () => {
-            // Test that string content is preserved
             const testPrompt = 'Test prompt with special characters: !@#$%^&*()';
             assert.strictEqual(testPrompt, testPrompt);
             assert.strictEqual(String(testPrompt), testPrompt);
@@ -83,12 +77,11 @@ suite('LLM Provider Integration Tests', () => {
         test('should have correct provider names', () => {
             const expectedProviders = [
                 'Anthropic',
-                'Gemini', // Note: keeping the typo as it exists in the code
+                'Gemini', // Intentionally preserving this string to match the legacy provider identifier used elsewhere in tests/fixtures
                 'OpenAI',
                 'Xai'
             ];
             
-            // Test that we have the expected provider names
             assert.strictEqual(Array.isArray(expectedProviders), true);
             assert.strictEqual(expectedProviders.length, 4);
             assert.ok(expectedProviders.includes('Anthropic'));
@@ -96,7 +89,6 @@ suite('LLM Provider Integration Tests', () => {
         });
 
         test('should throw error for unknown provider', () => {
-            // Test error handling for unknown providers
             try {
                 // This would normally be tested with actual getTool call
                 // but we're testing the error condition logic
@@ -115,7 +107,6 @@ suite('LLM Provider Integration Tests', () => {
                 someField: 'value'
             };
             
-            // Test that malformed prompts can be serialized
             const serialized = JSON.stringify(malformedPrompt);
             assert.strictEqual(typeof serialized, 'string');
             assert.ok(serialized.includes('someField'));
@@ -123,7 +114,6 @@ suite('LLM Provider Integration Tests', () => {
         });
 
         test('should handle null and undefined prompts', () => {
-            // Test handling of edge cases
             assert.strictEqual(String(null), 'null');
             assert.strictEqual(String(undefined), 'undefined');
             assert.strictEqual(typeof null, 'object');
@@ -156,7 +146,6 @@ suite('LLM Provider Integration Tests', () => {
                 variables_used: ['language', 'code', 'framework']
             };
 
-            // Test the structure of complex prompts
             const content = complexPrompt.content as any;
             assert.strictEqual(content.task, 'security_analysis');
             assert.ok(content.instructions.includes('security vulnerabilities'));
@@ -165,11 +154,9 @@ suite('LLM Provider Integration Tests', () => {
             assert.ok(Array.isArray(content.context.securityRules));
             assert.strictEqual(content.context.securityRules.length, 2);
             
-            // Test metadata
             assert.ok(Array.isArray(complexPrompt.metadata?.supported_languages));
             assert.strictEqual(complexPrompt.metadata?.supported_languages?.length, 2);
             
-            // Test variables_used
             assert.ok(Array.isArray(complexPrompt.variables_used));
             assert.strictEqual(complexPrompt.variables_used.length, 3);
         });

@@ -43,7 +43,6 @@ suite('Edge Cases and Error Scenarios Tests', () => {
       } as any);
 
       try {
-        // Verify cache starts uninitialized
         assert.strictEqual(apiKeyCache.isInitialized(), false);
         
         // Call getApiKey with no configured key
@@ -110,7 +109,6 @@ suite('Edge Cases and Error Scenarios Tests', () => {
         assert.strictEqual(apiKeyCache.get(), undefined);
         assert.strictEqual(apiKeyCache.isInitialized(), true);
         
-        // Simulate user setting API key for the first time
         configuredApiKey = 'newly-set-api-key';
         
         // Mock configuration change event
@@ -180,7 +178,6 @@ suite('Edge Cases and Error Scenarios Tests', () => {
         assert.strictEqual(result1, 'initial-key');
         assert.strictEqual(apiKeyCache.get(), 'initial-key');
         
-        // Simulate rapid configuration changes
         const changes = ['key-1', 'key-2', 'key-3', 'key-4', 'key-5'];
         const mockEvent: vscode.ConfigurationChangeEvent = {
           affectsConfiguration: (section: string) => section === 'DebugBuddy.apiKey'
@@ -190,7 +187,6 @@ suite('Edge Cases and Error Scenarios Tests', () => {
           currentApiKey = newKey;
           configChangeHandler.onConfigurationChanged(mockEvent);
           
-          // Verify cache is updated after each change
           assert.strictEqual(apiKeyCache.get(), newKey);
           assert.strictEqual(apiKeyCache.isInitialized(), true);
         }
@@ -238,7 +234,6 @@ suite('Edge Cases and Error Scenarios Tests', () => {
           currentApiKey = newKey;
           configChangeHandler.onConfigurationChanged(mockEvent);
           
-          // Verify cache reflects the current state
           assert.strictEqual(apiKeyCache.get(), newKey);
           assert.strictEqual(apiKeyCache.isInitialized(), true);
         }
@@ -282,7 +277,6 @@ suite('Edge Cases and Error Scenarios Tests', () => {
           affectsConfiguration: (section: string) => section === 'DebugBuddy.apiKey'
         };
         
-        // Simulate rapid changes with intermittent errors
         for (let i = 0; i < 10; i++) {
           shouldThrowError = (i % 3 === 0); // Every 3rd call fails
           currentApiKey = `key-${i}`;
@@ -328,13 +322,11 @@ suite('Edge Cases and Error Scenarios Tests', () => {
           affectsConfiguration: (section: string) => section === 'DebugBuddy.apiKey'
         };
         
-        // Simulate sequential configuration changes (more predictable than concurrent)
         // This tests rapid changes without the complexity of true concurrency
         for (let i = 0; i < 10; i++) {
           currentApiKey = `concurrent-key-${i}`;
           configChangeHandler.onConfigurationChanged(mockEvent);
           
-          // Verify cache is updated after each change
           assert.strictEqual(apiKeyCache.get(), `concurrent-key-${i}`);
           assert.strictEqual(apiKeyCache.isInitialized(), true);
         }
@@ -374,19 +366,16 @@ suite('Edge Cases and Error Scenarios Tests', () => {
         languageModelAccessInformation: {} as any
       };
 
-      // Set up cache with data before "restart"
       apiKeyCache.set('pre-restart-key');
       assert.strictEqual(apiKeyCache.get(), 'pre-restart-key');
       assert.strictEqual(apiKeyCache.isInitialized(), true);
       
-      // Simulate extension deactivation (restart scenario)
       deactivate();
       
       // After deactivation, cache should be cleared
       assert.strictEqual(apiKeyCache.get(), undefined);
       assert.strictEqual(apiKeyCache.isInitialized(), false);
       
-      // Simulate extension reactivation
       activate(mockContext);
       
       // Cache should still be empty after reactivation
@@ -412,7 +401,6 @@ suite('Edge Cases and Error Scenarios Tests', () => {
       } as any);
 
       try {
-        // Simulate extension restart cycle
         deactivate();
         
         // After restart, first getApiKey call should query VSCode fresh
@@ -454,12 +442,10 @@ suite('Edge Cases and Error Scenarios Tests', () => {
       for (let i = 0; i < testKeys.length; i++) {
         const testKey = testKeys[i];
         
-        // Set up cache
         apiKeyCache.set(testKey);
         assert.strictEqual(apiKeyCache.get(), testKey);
         assert.strictEqual(apiKeyCache.isInitialized(), true);
         
-        // Simulate restart
         deactivate();
         assert.strictEqual(apiKeyCache.get(), undefined);
         assert.strictEqual(apiKeyCache.isInitialized(), false);
@@ -508,7 +494,6 @@ suite('Edge Cases and Error Scenarios Tests', () => {
       } as any);
 
       try {
-        // Simulate restart
         deactivate();
         activate(mockContext);
         
@@ -536,13 +521,11 @@ suite('Edge Cases and Error Scenarios Tests', () => {
     });
 
     test('should handle restart with corrupted cache state gracefully', () => {
-      // Simulate a corrupted cache state that might occur during abnormal shutdown
       
       // First, set up normal cache state
       apiKeyCache.set('normal-key');
       assert.strictEqual(apiKeyCache.get(), 'normal-key');
       
-      // Simulate abnormal shutdown by not calling deactivate()
       // and directly clearing the cache to simulate corruption
       apiKeyCache.clear();
       
@@ -607,7 +590,6 @@ suite('Edge Cases and Error Scenarios Tests', () => {
       } as any);
 
       try {
-        // Simulate restart
         deactivate();
         activate(mockContext);
         
@@ -620,7 +602,6 @@ suite('Edge Cases and Error Scenarios Tests', () => {
         // Initialize configuration handler
         configChangeHandler.initialize();
         
-        // Simulate rapid configuration changes from undefined to defined
         const mockEvent: vscode.ConfigurationChangeEvent = {
           affectsConfiguration: (section: string) => section === 'DebugBuddy.apiKey'
         };
@@ -634,7 +615,6 @@ suite('Edge Cases and Error Scenarios Tests', () => {
           currentApiKey = newKey;
           configChangeHandler.onConfigurationChanged(mockEvent);
           
-          // Verify cache consistency
           assert.strictEqual(apiKeyCache.get(), newKey);
           assert.strictEqual(apiKeyCache.isInitialized(), true);
         }
@@ -688,7 +668,6 @@ suite('Edge Cases and Error Scenarios Tests', () => {
       };
 
       try {
-        // Test various error combinations
         const errorScenarios = [
           { config: false, cache: false, key: 'normal-key', desc: 'normal operation' },
           { config: true, cache: false, key: 'config-error-key', desc: 'config error only' },

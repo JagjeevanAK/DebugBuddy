@@ -61,7 +61,6 @@ export class PromptRegistry implements IPromptRegistry {
         this.prompts.set(name, prompt);
         this.prompts.set(prompt.id, prompt);
 
-        // Add to category index
         const categoryPrompts = this.promptsByCategory.get(prompt.category) || [];
         const existingIndex = categoryPrompts.findIndex(p => p.id === prompt.id);
         
@@ -78,7 +77,6 @@ export class PromptRegistry implements IPromptRegistry {
      * Retrieve a prompt by name or id (with lazy loading support)
      */
     async getPrompt(name: string): Promise<JsonPrompt | null> {
-        // Check in-memory registry first
         const inMemory = this.prompts.get(name);
         if (inMemory) {
             return inMemory;
@@ -125,11 +123,9 @@ export class PromptRegistry implements IPromptRegistry {
             return false;
         }
 
-        // Remove from main registry
         this.prompts.delete(name);
         this.prompts.delete(prompt.id);
 
-        // Remove from category index
         const categoryPrompts = this.promptsByCategory.get(prompt.category) || [];
         const filteredPrompts = categoryPrompts.filter(p => p.id !== prompt.id);
         this.promptsByCategory.set(prompt.category, filteredPrompts);
@@ -156,7 +152,7 @@ export class PromptRegistry implements IPromptRegistry {
             this.promptsByCategory.set(category, []);
         });
 
-        // Note: Actual reloading logic will be implemented when PromptLoader is created
+        // This method is an interface for external reload requests; PromptLoader will provide the concrete implementation
         // This method serves as the interface for external reload requests
     }
 

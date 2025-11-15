@@ -6,7 +6,6 @@
 import * as assert from 'assert';
 import { ProcessedPrompt } from '../prompt/types';
 
-// Test data
 const mockProcessedPrompt: ProcessedPrompt = {
     content: {
         task: 'code_review',
@@ -46,7 +45,6 @@ suite('Provider Integration - Core Logic', () => {
     // Using JSON prompts only - legacy prompt tests removed
 
     test('Prompt processing logic simulation', () => {
-        // Simulate the logic from provider tools
         function processPromptLogic(prompt: any): { text: string; type?: string; hasContext: boolean } {
             let promptText: string;
             let promptType: string | undefined;
@@ -88,7 +86,6 @@ suite('Provider Integration - Core Logic', () => {
             return { text: promptText, type: promptType, hasContext };
         }
 
-        // Test ProcessedPrompt processing
         const processedResult = processPromptLogic(mockProcessedPrompt);
         assert.ok(processedResult.text.includes('Task: code_review'));
         assert.ok(processedResult.text.includes('Review the following'));
@@ -99,7 +96,6 @@ suite('Provider Integration - Core Logic', () => {
 
         // JSON prompts only - legacy prompt processing removed
 
-        // Test string prompt processing
         const stringResult = processPromptLogic('Simple test prompt');
         assert.strictEqual(stringResult.text, 'Simple test prompt');
         assert.strictEqual(stringResult.type, undefined);
@@ -107,7 +103,6 @@ suite('Provider Integration - Core Logic', () => {
     });
 
     test('JSON serialization and deserialization', () => {
-        // Test ProcessedPrompt serialization
         const serialized = JSON.stringify(mockProcessedPrompt);
         const deserialized = JSON.parse(serialized);
         
@@ -119,7 +114,6 @@ suite('Provider Integration - Core Logic', () => {
     });
 
     test('Provider response structure', () => {
-        // Test expected response structure
         const mockResponse = {
             text: 'Mock LLM response',
             metadata: mockProcessedPrompt.metadata,

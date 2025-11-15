@@ -79,7 +79,6 @@ suite('API Key Cache Service Tests', () => {
   });
 
   test('should handle cache operations gracefully under normal conditions', () => {
-    // Test that normal operations don't throw errors
     assert.doesNotThrow(() => {
       apiKeyCache.isInitialized();
     });

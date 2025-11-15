@@ -11,7 +11,6 @@ suite('Webview Infrastructure Tests', () => {
         mockContext = {
             subscriptions: [],
             extensionUri: vscode.Uri.file('/test/path'),
-            // Add other required properties as needed
         } as any;
     });
 
@@ -24,7 +23,6 @@ suite('Webview Infrastructure Tests', () => {
         const manager = new WebviewManager();
         assert.ok(manager, 'WebviewManager should be instantiated');
         
-        // Test initialization
         manager.initialize(mockContext);
         assert.ok(manager.isWebviewActive(), 'WebviewManager should be active after initialization');
     });

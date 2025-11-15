@@ -89,7 +89,6 @@ export class WebviewManager implements IWebviewManager {
             return;
         }
 
-        // Check if fallback should be used immediately
         if (!this.fallbackEnabled) {
             this.errorLogger.logError('displayResponseWithFallback', new Error('Fallback is disabled'), true, { fileName });
             this.fallbackToTerminal(content, fileName);
@@ -183,7 +182,6 @@ export class WebviewManager implements IWebviewManager {
                 // If webview exists, show it
                 this.webviewProvider.show();
             } else {
-                // Create new webview and show last content if available
                 this.webviewProvider.show();
                 if (this.state.lastContent) {
                     this.webviewProvider.updateContent(
@@ -359,7 +357,6 @@ export class WebviewManager implements IWebviewManager {
     }
 
     private addToHistory(content: WebviewContent): void {
-        // Add to beginning of history
         this.state.contentHistory.unshift(content);
         
         // Limit history size

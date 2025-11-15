@@ -47,7 +47,6 @@ export class ThemeManager implements IThemeManager {
     public getCurrentTheme(): ThemeConfiguration {
         const colorTheme = vscode.window.activeColorTheme;
         
-        // Extract colors from VS Code theme
         const theme: ThemeConfiguration = {
             backgroundColor: this.getThemeColor('editor.background', '#1e1e1e'),
             foregroundColor: this.getThemeColor('editor.foreground', '#d4d4d4'),

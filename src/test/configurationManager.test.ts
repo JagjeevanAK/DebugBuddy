@@ -139,7 +139,6 @@ suite('ConfigurationManager Tests', () => {
             receivedConfig = config;
         });
 
-        // Simulate configuration change by calling the private method
         // In a real scenario, this would be triggered by VS Code
         (configManager as any).notifyConfigurationChange();
 

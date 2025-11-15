@@ -19,7 +19,6 @@ export const getModelResponse = async (
 ) => {
     const key = `${uri.toString()}-${diagnostic.message}`;
 
-    // Check cache first
     if (explanationCache.has(key)) {
         return explanationCache.get(key);
     }
@@ -28,7 +27,6 @@ export const getModelResponse = async (
         const errDetails = errorDetails({uri, diagnostic});
 
         if (errDetails) {
-            // Convert error details to CodeContext for the new prompt system
             const codeContext: CodeContext = {
                 selectedText: errDetails.errorLine ? errDetails.errorLine.text : '',
                 fullText: Array.isArray(errDetails.surroundingCode) 

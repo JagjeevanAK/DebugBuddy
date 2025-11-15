@@ -51,7 +51,6 @@ export class WebviewProvider implements IWebviewProvider {
                 throw new Error('Extension context is invalid or not available');
             }
 
-            // Create new webview panel
             const config = vscode.workspace.getConfiguration('DebugBuddy');
             const webviewPosition = config.get<string>('webviewPosition', 'beside');
             const retainContext = config.get<boolean>('webviewRetainContext', true);
@@ -94,7 +93,6 @@ export class WebviewProvider implements IWebviewProvider {
                 throw new Error('Failed to create webview panel - VS Code returned undefined');
             }
 
-            // Handle panel disposal
             this.panel.onDidDispose(() => {
                 this.panel = undefined;
                 // Notify WebviewManager of panel disposal

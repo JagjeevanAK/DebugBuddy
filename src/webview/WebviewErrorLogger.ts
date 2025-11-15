@@ -44,7 +44,6 @@ export class WebviewErrorLogger {
             context
         };
 
-        // Add to error history
         this.errors.unshift(webviewError);
         
         // Limit history size

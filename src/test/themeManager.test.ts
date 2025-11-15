@@ -46,8 +46,7 @@ suite('ThemeManager Tests', () => {
             done();
         });
 
-        // Simulate theme change by manually triggering the callback
-        // Note: In a real test environment, we would trigger an actual theme change
+        // In unit tests, manually triggering the theme callback avoids flakiness — real VS Code theme events aren't available here
         // For now, we'll just verify the callback registration works
         setTimeout(() => {
             if (!callbackCalled) {

@@ -249,7 +249,6 @@ export class ValidationUtils {
             potentialIssues: []
         };
 
-        // Extract used variables
         const usedVariables = this.extractUsedVariables(template);
         analysis.variableUsage.used = Array.from(usedVariables);
 
@@ -292,7 +291,6 @@ export class ValidationUtils {
         const variables = new Set<string>();
         const variablePattern = /\$\{([^}]+)\}/g;
 
-        // Check all string fields in template
         const checkString = (str: string) => {
             let match;
             while ((match = variablePattern.exec(str)) !== null) {
@@ -308,10 +306,8 @@ export class ValidationUtils {
             checkString(template.language);
         }
 
-        // Check context object recursively
         this.extractVariablesFromObject(template.context, variables);
 
-        // Check output format
         if (template.output_format && typeof template.output_format.structure === 'string') {
             checkString(template.output_format.structure);
         }
@@ -428,7 +424,6 @@ export class ValidationUtils {
         const errors: string[] = [];
         const warnings: string[] = [];
 
-        // Check if configurable fields exist in template
         if (prompt.config.configurable_fields) {
             for (const field of prompt.config.configurable_fields) {
                 if (!this.fieldExistsInTemplate(field, prompt.template)) {
@@ -437,7 +432,6 @@ export class ValidationUtils {
             }
         }
 
-        // Check default values
         if (prompt.config.default_values) {
             for (const [key, value] of Object.entries(prompt.config.default_values)) {
                 if (!prompt.config.configurable_fields?.includes(key)) {
@@ -477,13 +471,11 @@ export class ValidationUtils {
     private validateVersionCompatibility(prompt: JsonPrompt): ValidationResult {
         const warnings: string[] = [];
 
-        // Check schema version
         const supportedVersions = ['1.0', '1.1'];
         if (!supportedVersions.includes(prompt.schema_version)) {
             warnings.push(`Schema version '${prompt.schema_version}' may not be fully supported`);
         }
 
-        // Check prompt version format
         if (prompt.version && !/^\d+\.\d+(\.\d+)?$/.test(prompt.version)) {
             warnings.push('Version should follow semantic versioning format (e.g., 1.0.0)');
         }
@@ -498,7 +490,6 @@ export class ValidationUtils {
         const errors: string[] = [];
         const warnings: string[] = [];
 
-        // Check for potential injection patterns
         const dangerousPatterns = [
             /eval\s*\(/i,
             /exec\s*\(/i,
@@ -518,7 +509,6 @@ export class ValidationUtils {
         checkForDangerousPatterns(prompt.template.instructions, 'instructions');
         checkForDangerousPatterns(prompt.template.task, 'task');
 
-        // Check for overly permissive variable patterns
         if (prompt.template.variables) {
             for (const variable of prompt.template.variables) {
                 if (variable.includes('*') || variable.includes('..')) {

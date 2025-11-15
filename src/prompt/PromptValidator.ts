@@ -21,33 +21,26 @@ export class PromptValidator implements IPromptValidator {
         const warnings: string[] = [];
 
         try {
-            // Basic null/undefined check
             if (!prompt) {
                 errors.push('Prompt is null or undefined');
                 return { isValid: false, errors, warnings };
             }
 
-            // Validate required fields
             this.validateRequiredFields(prompt, PromptValidator.REQUIRED_PROMPT_FIELDS, errors);
-
-            // Validate field types and constraints
             this.validatePromptFields(prompt, errors, warnings);
 
-            // Validate template structure
             if (prompt.template) {
                 const templateValidation = this.validateTemplate(prompt.template);
                 errors.push(...templateValidation.errors);
                 warnings.push(...templateValidation.warnings);
             }
 
-            // Validate configuration
             if (prompt.config) {
                 const configValidation = this.validateConfig(prompt.config);
                 errors.push(...configValidation.errors);
                 warnings.push(...configValidation.warnings);
             }
 
-            // Cross-validation between template and config
             this.validateTemplateConfigConsistency(prompt, errors, warnings);
 
         } catch (error) {
@@ -73,13 +66,8 @@ export class PromptValidator implements IPromptValidator {
             return { isValid: false, errors, warnings };
         }
 
-        // Validate required template fields
         this.validateRequiredFields(template, PromptValidator.REQUIRED_TEMPLATE_FIELDS, errors);
-
-        // Validate field types and content
         this.validateTemplateFields(template, errors, warnings);
-
-        // Validate variable references
         this.validateVariableReferences(template, errors, warnings);
 
         return {
@@ -101,10 +89,7 @@ export class PromptValidator implements IPromptValidator {
             return { isValid: false, errors, warnings };
         }
 
-        // Validate required config fields
         this.validateRequiredFields(config, PromptValidator.REQUIRED_CONFIG_FIELDS, errors);
-
-        // Validate field types and content
         this.validateConfigFields(config, errors, warnings);
 
         return {
@@ -129,7 +114,6 @@ export class PromptValidator implements IPromptValidator {
      * Validate prompt-level fields
      */
     private validatePromptFields(prompt: JsonPrompt, errors: string[], warnings: string[]): void {
-        // Validate ID format
         if (prompt.id && typeof prompt.id === 'string') {
             if (!/^[a-zA-Z0-9_-]+$/.test(prompt.id)) {
                 errors.push('Prompt ID must contain only alphanumeric characters, underscores, and hyphens');
@@ -141,7 +125,6 @@ export class PromptValidator implements IPromptValidator {
             errors.push('Prompt ID must be a string');
         }
 
-        // Validate name
         if (prompt.name && typeof prompt.name === 'string') {
             if (prompt.name.length > 200) {
                 errors.push('Prompt name must be 200 characters or less');
@@ -153,7 +136,6 @@ export class PromptValidator implements IPromptValidator {
             errors.push('Prompt name must be a string');
         }
 
-        // Validate description
         if (prompt.description && typeof prompt.description === 'string') {
             if (prompt.description.length > 1000) {
                 warnings.push('Prompt description is very long (>1000 characters)');
@@ -162,14 +144,12 @@ export class PromptValidator implements IPromptValidator {
             errors.push('Prompt description must be a string');
         }
 
-        // Validate category
         if (prompt.category !== undefined) {
             if (!Object.values(PromptCategory).includes(prompt.category)) {
                 errors.push(`Invalid prompt category: ${prompt.category}. Must be one of: ${Object.values(PromptCategory).join(', ')}`);
             }
         }
 
-        // Validate schema version
         if (prompt.schema_version && typeof prompt.schema_version === 'string') {
             if (!PromptValidator.SUPPORTED_SCHEMA_VERSIONS.includes(prompt.schema_version)) {
                 warnings.push(`Unsupported schema version: ${prompt.schema_version}. Supported versions: ${PromptValidator.SUPPORTED_SCHEMA_VERSIONS.join(', ')}`);
@@ -178,7 +158,6 @@ export class PromptValidator implements IPromptValidator {
             errors.push('Schema version must be a string');
         }
 
-        // Validate version
         if (prompt.version && typeof prompt.version === 'string') {
             if (!/^\d+\.\d+(\.\d+)?$/.test(prompt.version)) {
                 warnings.push('Version should follow semantic versioning format (e.g., 1.0.0)');
@@ -187,7 +166,6 @@ export class PromptValidator implements IPromptValidator {
             errors.push('Version must be a string');
         }
 
-        // Validate optional date fields
         if (prompt.created_date && !this.isValidDateString(prompt.created_date)) {
             warnings.push('Created date is not in a valid format');
         }
@@ -200,7 +178,6 @@ export class PromptValidator implements IPromptValidator {
      * Validate template-specific fields
      */
     private validateTemplateFields(template: PromptTemplate, errors: string[], warnings: string[]): void {
-        // Validate task
         if (template.task !== undefined) {
             if (typeof template.task === 'string') {
                 if (template.task.trim().length === 0) {
@@ -214,7 +191,6 @@ export class PromptValidator implements IPromptValidator {
             }
         }
 
-        // Validate instructions
         if (template.instructions !== undefined) {
             if (typeof template.instructions === 'string') {
                 if (template.instructions.trim().length === 0) {
@@ -228,7 +204,6 @@ export class PromptValidator implements IPromptValidator {
             }
         }
 
-        // Validate context
         if (template.context !== undefined) {
             if (typeof template.context !== 'object' || template.context === null) {
                 errors.push('Template context must be an object');
@@ -237,7 +212,6 @@ export class PromptValidator implements IPromptValidator {
             }
         }
 
-        // Validate output_format
         if (template.output_format !== undefined) {
             if (typeof template.output_format !== 'object' || template.output_format === null) {
                 errors.push('Template output_format must be an object');
@@ -246,7 +220,6 @@ export class PromptValidator implements IPromptValidator {
             }
         }
 
-        // Validate variables array
         if (template.variables !== undefined) {
             if (!Array.isArray(template.variables)) {
                 errors.push('Template variables must be an array');
@@ -255,7 +228,6 @@ export class PromptValidator implements IPromptValidator {
             }
         }
 
-        // Validate language (optional)
         if (template.language && typeof template.language !== 'string') {
             errors.push('Template language must be a string');
         }
@@ -265,7 +237,6 @@ export class PromptValidator implements IPromptValidator {
      * Validate configuration fields
      */
     private validateConfigFields(config: PromptConfig, errors: string[], warnings: string[]): void {
-        // Validate configurable_fields
         if (config.configurable_fields !== undefined) {
             if (!Array.isArray(config.configurable_fields)) {
                 errors.push('Config configurable_fields must be an array');
@@ -279,21 +250,18 @@ export class PromptValidator implements IPromptValidator {
             }
         }
 
-        // Validate default_values
         if (config.default_values !== undefined) {
             if (typeof config.default_values !== 'object' || config.default_values === null) {
                 errors.push('Config default_values must be an object');
             }
         }
 
-        // Validate validation_rules
         if (config.validation_rules !== undefined) {
             if (typeof config.validation_rules !== 'object' || config.validation_rules === null) {
                 errors.push('Config validation_rules must be an object');
             }
         }
 
-        // Validate optional fields
         if (config.focus_areas && !Array.isArray(config.focus_areas)) {
             errors.push('Config focus_areas must be an array');
         }
@@ -312,7 +280,6 @@ export class PromptValidator implements IPromptValidator {
             warnings.push('Template context is empty');
         }
 
-        // Check for excessively deep nesting
         if (this.getObjectDepth(context) > 5) {
             warnings.push('Template context has very deep nesting (>5 levels)');
         }
@@ -326,7 +293,6 @@ export class PromptValidator implements IPromptValidator {
             errors.push('Output format must have a structure field that is a string');
         }
 
-        // Validate boolean flags
         const booleanFields = ['include_line_numbers', 'include_severity', 'include_explanation', 'include_fix_suggestion'];
         for (const field of booleanFields) {
             if (outputFormat[field] !== undefined && typeof outputFormat[field] !== 'boolean') {
@@ -351,7 +317,6 @@ export class PromptValidator implements IPromptValidator {
             }
         }
 
-        // Check for duplicates
         const uniqueVariables = new Set(variables);
         if (uniqueVariables.size !== variables.length) {
             warnings.push('Template has duplicate variables');
@@ -365,17 +330,14 @@ export class PromptValidator implements IPromptValidator {
         const declaredVariables = new Set(template.variables || []);
         const usedVariables = new Set<string>();
 
-        // Extract variables from template strings
         this.extractVariablesFromObject(template, usedVariables);
 
-        // Check for undeclared variables
         for (const usedVar of Array.from(usedVariables)) {
             if (!declaredVariables.has(usedVar)) {
                 warnings.push(`Variable '${usedVar}' is used but not declared in variables array`);
             }
         }
 
-        // Check for unused declared variables
         for (const declaredVar of Array.from(declaredVariables)) {
             if (!usedVariables.has(declaredVar)) {
                 warnings.push(`Variable '${declaredVar}' is declared but not used in template`);
@@ -391,7 +353,6 @@ export class PromptValidator implements IPromptValidator {
             return;
         }
 
-        // Check if configurable fields exist in template
         const configurableFields = prompt.config.configurable_fields || [];
         for (const field of configurableFields) {
             if (!this.fieldExistsInTemplate(field, prompt.template)) {
@@ -399,7 +360,6 @@ export class PromptValidator implements IPromptValidator {
             }
         }
 
-        // Check if default values correspond to configurable fields
         const defaultValues = prompt.config.default_values || {};
         for (const key of Object.keys(defaultValues)) {
             if (!configurableFields.includes(key)) {
@@ -417,7 +377,6 @@ export class PromptValidator implements IPromptValidator {
             if (matches) {
                 for (const match of matches) {
                     const variableName = match.slice(2, -1).trim();
-                    // Handle nested variables like "user.name" - just take the root
                     const rootVariable = variableName.split('.')[0];
                     variables.add(rootVariable);
                 }
@@ -437,7 +396,6 @@ export class PromptValidator implements IPromptValidator {
      * Check if a field exists in the template structure
      */
     private fieldExistsInTemplate(fieldPath: string, template: PromptTemplate): boolean {
-        // Simple implementation - check if field path exists in template
         const parts = fieldPath.split('.');
         let current: any = template;
 

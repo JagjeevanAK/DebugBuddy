@@ -68,7 +68,6 @@ export class MarkdownRenderer implements IMarkdownRenderer {
   }
 
   public addSyntaxHighlighting(html: string): string {
-    // Add highlighting class to code blocks and apply syntax highlighting
     return html.replace(
       /<code class="language-(\w+)"([^>]*)>/g,
       '<code class="language-$1 highlighted"$2>'
@@ -90,7 +89,6 @@ export class MarkdownRenderer implements IMarkdownRenderer {
       warnings: []
     };
 
-    // Check for basic content validity
     if (!content || typeof content !== 'string') {
       result.isValid = false;
       result.errors.push('Content is null, undefined, or not a string');
@@ -103,12 +101,10 @@ export class MarkdownRenderer implements IMarkdownRenderer {
       return result;
     }
 
-    // Check for extremely large content that might cause performance issues
     if (content.length > 1000000) { // 1MB limit
       result.warnings.push('Content is very large and may affect performance');
     }
 
-    // Check for potential markdown parsing issues
     try {
       this.md.render(content);
     } catch (error) {
@@ -261,7 +257,6 @@ export class MarkdownRenderer implements IMarkdownRenderer {
       lang = this.detectLanguage(str);
     }
     
-    // Return escaped content without syntax highlighting
     // The addSyntaxHighlighting method will handle the actual highlighting
     return this.md.utils.escapeHtml(str);
   }

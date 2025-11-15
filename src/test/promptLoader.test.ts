@@ -177,7 +177,6 @@ suite('PromptLoader Test Suite', () => {
 
             fs.writeFileSync(path.join(testDir, 'prompt1.json'), JSON.stringify(prompt1));
             fs.writeFileSync(path.join(testDir, 'prompt2.json'), JSON.stringify(prompt2));
-            // Add a non-JSON file that should be ignored
             fs.writeFileSync(path.join(testDir, 'readme.txt'), 'This should be ignored');
 
             const loadedPrompts = await promptLoader.loadPromptsFromDirectory(testDir);

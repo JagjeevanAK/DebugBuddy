@@ -41,7 +41,6 @@ export class TemplateEngine implements ITemplateEngine {
                 throw error;
             }
 
-            // Include all declared variables and all provided variables
             const allVariables = [...variablesUsed];
             if (prompt.template.variables && Array.isArray(prompt.template.variables)) {
                 allVariables.push(...prompt.template.variables);
@@ -68,7 +67,6 @@ export class TemplateEngine implements ITemplateEngine {
         const errors: string[] = [];
         const warnings: string[] = [];
 
-        // Check required fields
         if (!template) {
             errors.push('Template is null or undefined');
             return { isValid: false, errors, warnings };
@@ -112,15 +110,12 @@ export class TemplateEngine implements ITemplateEngine {
         return template.replace(TemplateEngine.VARIABLE_PATTERN, (match, variablePath) => {
             const value = this.resolveNestedVariable(variablePath.trim(), variables);
             
-            // Check if the variable path exists in the variables object
             const pathExists = this.variablePathExists(variablePath.trim(), variables);
             
             if (!pathExists) {
-                // Return the original placeholder if variable path doesn't exist
                 return match;
             }
 
-            // Convert value to string representation (including null/undefined)
             return this.valueToString(value);
         });
     }

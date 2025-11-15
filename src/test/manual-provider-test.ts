@@ -21,7 +21,6 @@ const mockXAI = () => () => 'grok-3-beta';
 // Mock getApiKey
 const mockGetApiKey = () => 'test-api-key';
 
-// Test data
 const testProcessedPrompt: ProcessedPrompt = {
     content: {
         task: 'code_review',
@@ -52,11 +51,9 @@ const testProcessedPrompt: ProcessedPrompt = {
 
 const testStringPrompt = 'Simple string prompt for testing';
 
-// Test functions
 function testPromptStructure() {
     console.log('=== Testing Prompt Structure ===');
     
-    // Test ProcessedPrompt structure
     console.log('ProcessedPrompt structure test:');
     const content = testProcessedPrompt.content as any;
     console.log('- Task:', content.task);
@@ -75,7 +72,6 @@ function testPromptStructure() {
 function testPromptSerialization() {
     console.log('\n=== Testing Prompt Serialization ===');
     
-    // Test ProcessedPrompt serialization
     console.log('ProcessedPrompt serialization:');
     const serializedProcessed = JSON.stringify(testProcessedPrompt, null, 2);
     console.log('- Serialized length:', serializedProcessed.length);
@@ -84,7 +80,6 @@ function testPromptSerialization() {
     
     // Legacy prompt serialization removed - JSON prompts only
     
-    // Test deserialization
     const parsed = JSON.parse(serializedProcessed);
     console.log('- Deserialization successful:', parsed.content.task === 'code_review');
 }
@@ -92,7 +87,6 @@ function testPromptSerialization() {
 function testPromptProcessing() {
     console.log('\n=== Testing Prompt Processing Logic ===');
     
-    // Simulate the logic from the provider tools
     function processPrompt(prompt: any): string {
         let promptText: string;
         
@@ -130,7 +124,6 @@ function testPromptProcessing() {
         return promptText;
     }
     
-    // Test ProcessedPrompt processing
     console.log('ProcessedPrompt processing:');
     const processedText = processPrompt(testProcessedPrompt);
     console.log('- Contains task prefix:', processedText.includes('Task: code_review'));
@@ -142,7 +135,6 @@ function testPromptProcessing() {
     // Legacy prompt processing removed - JSON prompts only
     // Legacy text processing removed - JSON prompts only
     
-    // Test string prompt processing
     console.log('\nString prompt processing:');
     const stringText = processPrompt(testStringPrompt);
     console.log('- Unchanged:', stringText === testStringPrompt);
@@ -152,7 +144,6 @@ function testPromptProcessing() {
 function testProviderResponseStructure() {
     console.log('\n=== Testing Provider Response Structure ===');
     
-    // Simulate provider response
     const mockResponse = {
         text: 'Mock LLM response',
         metadata: testProcessedPrompt.metadata,

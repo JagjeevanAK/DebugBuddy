@@ -35,7 +35,6 @@ suite('Provider Final Integration Test', () => {
             variables_used: ['language', 'code', 'filePath']
         };
 
-        // Test that the ProcessedPrompt has all required fields
         assert.ok(mockProcessedPrompt.content);
         assert.ok(mockProcessedPrompt.metadata);
         assert.ok(Array.isArray(mockProcessedPrompt.variables_used));
@@ -48,7 +47,6 @@ suite('Provider Final Integration Test', () => {
     });
 
     test('Provider response structure should include metadata', () => {
-        // Test the expected response structure from providers
         const expectedResponse = {
             text: 'Mock LLM response',
             metadata: {
@@ -76,7 +74,6 @@ suite('Provider Final Integration Test', () => {
             }
         };
 
-        // Test that JSON prompts have required structure
         assert.strictEqual(jsonPrompt.task, 'debug_analysis');
         assert.ok(jsonPrompt.instructions);
         assert.ok(jsonPrompt.context);
@@ -86,7 +83,6 @@ suite('Provider Final Integration Test', () => {
     test('String prompts should be handled correctly', () => {
         const stringPrompt = 'Simple string prompt for testing';
         
-        // Test that string prompts are preserved
         assert.strictEqual(typeof stringPrompt, 'string');
         assert.strictEqual(stringPrompt.length, 32);
         assert.strictEqual(String(stringPrompt), stringPrompt);
@@ -95,19 +91,16 @@ suite('Provider Final Integration Test', () => {
     test('Provider selection logic should work correctly', () => {
         const validProviders = ['Anthropic', 'Gemini', 'OpenAI', 'Xai'];
         
-        // Test provider names
         assert.strictEqual(validProviders.length, 4);
         assert.ok(validProviders.includes('Anthropic'));
         assert.ok(validProviders.includes('OpenAI'));
         assert.ok(validProviders.includes('Gemini')); // Note: keeping the typo as it exists
         assert.ok(validProviders.includes('Xai'));
         
-        // Test invalid provider
         assert.ok(!validProviders.includes('InvalidProvider'));
     });
 
     test('Prompt serialization should work for all formats', () => {
-        // Test ProcessedPrompt serialization
         const processedPrompt: ProcessedPrompt = {
             content: {
                 task: 'security_analysis',
@@ -133,7 +126,6 @@ suite('Provider Final Integration Test', () => {
         assert.strictEqual(deserialized.content.context.language, 'javascript');
         assert.deepStrictEqual(deserialized.variables_used, ['language', 'code']);
 
-        // Test JSON prompt serialization
         const jsonPrompt = {
             task: 'refactor',
             instructions: 'Suggest refactoring improvements.',
@@ -148,17 +140,14 @@ suite('Provider Final Integration Test', () => {
     });
 
     test('Error handling should be robust', () => {
-        // Test null/undefined handling
         assert.strictEqual(String(null), 'null');
         assert.strictEqual(String(undefined), 'undefined');
         
-        // Test malformed object handling
         const malformed = { incomplete: 'data' };
         const serialized = JSON.stringify(malformed);
         assert.ok(serialized.includes('incomplete'));
         assert.ok(serialized.includes('data'));
         
-        // Test empty object handling
         const empty = {};
         assert.strictEqual(typeof empty, 'object');
         assert.strictEqual(Object.keys(empty).length, 0);
@@ -176,14 +165,12 @@ suite('Provider Final Integration Test', () => {
             framework: 'react'
         };
 
-        // Test that all context fields are preserved
         assert.strictEqual(fullContext.language, 'typescript');
         assert.strictEqual(fullContext.filePath, 'src/test.ts');
         assert.ok(fullContext.code.includes('function'));
         assert.strictEqual(fullContext.lineNumber, 5);
         assert.strictEqual(fullContext.columnNumber, 10);
         
-        // Test serialization preserves all fields
         const serialized = JSON.stringify(fullContext);
         const parsed = JSON.parse(serialized);
         assert.deepStrictEqual(parsed, fullContext);
@@ -198,14 +185,12 @@ suite('Provider Final Integration Test', () => {
             include_fix_suggestion: false
         };
 
-        // Test all output format fields
         assert.strictEqual(outputFormat.structure, 'categorized_list');
         assert.strictEqual(outputFormat.include_line_numbers, true);
         assert.strictEqual(outputFormat.include_severity, true);
         assert.strictEqual(outputFormat.include_explanation, true);
         assert.strictEqual(outputFormat.include_fix_suggestion, false);
         
-        // Test serialization
         const serialized = JSON.stringify(outputFormat);
         const parsed = JSON.parse(serialized);
         assert.deepStrictEqual(parsed, outputFormat);

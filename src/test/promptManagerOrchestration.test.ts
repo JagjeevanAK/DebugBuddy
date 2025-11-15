@@ -38,7 +38,6 @@ const mockVscode = {
     }
 };
 
-// Set up mock before importing modules
 (global as any).vscode = mockVscode;
 
 suite('PromptManager Orchestration Integration Tests', () => {
@@ -64,7 +63,6 @@ suite('PromptManager Orchestration Integration Tests', () => {
         test('should coordinate all components in processRequest', async () => {
             await promptManager.initialize();
 
-            // Add a test prompt to ensure we have something to work with
             const testPrompt: JsonPrompt = {
                 id: 'test-orchestration',
                 name: 'Test Orchestration Prompt',
@@ -103,13 +101,11 @@ suite('PromptManager Orchestration Integration Tests', () => {
 
             const result = await promptManager.processRequest(UserAction.CODE_REVIEW, codeContext);
 
-            // Verify orchestration worked
             assert.ok(result, 'Should return a processed prompt');
             assert.ok(result.content, 'Should have content');
             assert.ok(result.metadata, 'Should have metadata');
             assert.ok(Array.isArray(result.variables_used), 'Should have variables_used array');
 
-            // Verify components were coordinated
             assert.ok(result.variables_used.length > 0, 'Should have used variables');
             assert.ok(result.variables_used.includes('code') || result.variables_used.includes('selectedCode'), 'Should include code variable');
             assert.ok(result.variables_used.includes('language'), 'Should include language variable');
@@ -130,7 +126,6 @@ suite('PromptManager Orchestration Integration Tests', () => {
                 }]
             };
 
-            // Test different user actions to verify orchestration
             const actions = [
                 UserAction.CODE_REVIEW,
                 UserAction.DEBUG_ERROR,
@@ -149,7 +144,6 @@ suite('PromptManager Orchestration Integration Tests', () => {
         test('should coordinate context analysis with prompt selection', async () => {
             await promptManager.initialize();
 
-            // Test that different contexts lead to different prompt processing
             const jsContext: CodeContext = {
                 selectedText: 'function calculate() {}',
                 language: 'javascript',
@@ -211,7 +205,6 @@ suite('PromptManager Orchestration Integration Tests', () => {
         test('should coordinate validation with error handling', async () => {
             await promptManager.initialize();
 
-            // Add an invalid prompt to test validation coordination
             const invalidPrompt = {
                 id: 'invalid-orchestration-test',
                 name: 'Invalid Test',
@@ -272,13 +265,11 @@ suite('PromptManager Orchestration Integration Tests', () => {
 
             const stats = promptManager.getStats();
 
-            // Verify all expected statistics are present
             assert.ok(stats.initialized, 'Should report initialization status');
             assert.ok(stats.promptSystem, 'Should include prompt system stats');
             assert.ok(stats.errorStats, 'Should include error statistics');
             assert.ok(stats.recoveryCapabilities, 'Should include recovery capabilities');
 
-            // Verify structure of nested stats
             assert.ok(typeof stats.promptSystem.totalPrompts === 'number', 'Should have total prompts count');
             assert.ok(typeof stats.promptSystem.promptsByCategory === 'object', 'Should have prompts by category');
         });
@@ -441,7 +432,6 @@ suite('PromptManager Orchestration Integration Tests', () => {
         test('should orchestrate proper error handling without legacy fallback', async () => {
             await promptManager.initialize();
 
-            // Test that all components coordinate to handle errors properly
             const testScenarios = [
                 {
                     name: 'No prompts available',
@@ -492,7 +482,6 @@ suite('PromptManager Orchestration Integration Tests', () => {
                     `Should handle ${scenario.name} scenario properly`
                 );
 
-                // Verify error was logged by error handler
                 const errorStats = promptErrorHandler.getErrorStats();
                 assert.ok(Object.values(errorStats).some(stat => stat.count > 0), 
                     `Should log errors for ${scenario.name} scenario`);
@@ -548,7 +537,6 @@ suite('PromptManager Orchestration Integration Tests', () => {
                     'Should coordinate validation error without legacy fallback'
                 );
 
-                // Verify all components logged the error appropriately
                 const errorStats = promptErrorHandler.getErrorStats();
                 assert.ok(Object.keys(errorStats).length > 0, 'Should have error statistics from coordinated error handling');
             } finally {
@@ -559,7 +547,6 @@ suite('PromptManager Orchestration Integration Tests', () => {
         test('should verify JSON-only orchestration performance', async () => {
             await promptManager.initialize();
 
-            // Add a valid prompt for testing
             const validPrompt: JsonPrompt = {
                 id: 'performance-test',
                 name: 'Performance Test Prompt',
@@ -592,7 +579,6 @@ suite('PromptManager Orchestration Integration Tests', () => {
             const result = await promptManager.processRequest(UserAction.CODE_REVIEW, codeContext);
             const endTime = Date.now();
 
-            // Verify successful JSON-only processing
             assert.ok(result, 'Should successfully process with JSON-only approach');
             assert.ok(result.content, 'Should have content');
             assert.ok(result.variables_used.length > 0, 'Should use variables');

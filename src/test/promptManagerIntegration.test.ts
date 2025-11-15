@@ -47,7 +47,6 @@ suite('PromptManager Integration Tests', () => {
             assert.strictEqual(promptManager.isInitialized(), true);
             assert.strictEqual(promptSystem.isInitialized(), true);
             
-            // Verify components are properly integrated
             const stats = promptManager.getStats();
             assert.ok(stats.initialized);
             assert.ok(stats.promptSystem);
@@ -72,7 +71,6 @@ suite('PromptManager Integration Tests', () => {
         });
 
         test('should validate prompt integrity during initialization', async () => {
-            // Add a valid prompt
             const validPrompt: JsonPrompt = {
                 id: 'test-valid',
                 name: 'Test Valid Prompt',
@@ -94,7 +92,6 @@ suite('PromptManager Integration Tests', () => {
                 }
             };
 
-            // Add an invalid prompt
             const invalidPrompt = {
                 id: 'test-invalid',
                 name: 'Test Invalid Prompt',
@@ -132,17 +129,14 @@ suite('PromptManager Integration Tests', () => {
 
             const result = await promptManager.processRequest(UserAction.CODE_REVIEW, codeContext);
 
-            // Verify complete processing
             assert.ok(result);
             assert.ok(result.content);
             assert.ok(result.metadata);
             assert.ok(Array.isArray(result.variables_used));
 
-            // Verify context was analyzed
             assert.ok(result.variables_used.includes('language'));
             assert.ok(result.variables_used.includes('selectedCode') || result.variables_used.includes('code'));
 
-            // Verify template processing occurred
             assert.ok(typeof result.content === 'object');
             assert.ok((result.content as any).task);
         });
@@ -170,7 +164,6 @@ suite('PromptManager Integration Tests', () => {
             assert.ok(result);
             assert.ok(result.content);
             
-            // Verify error context was processed
             assert.ok(result.variables_used.includes('errorMessage'));
             assert.ok(result.variables_used.includes('language'));
         });
@@ -208,7 +201,6 @@ suite('PromptManager Integration Tests', () => {
         test('should coordinate context analysis with prompt selection', async () => {
             await promptManager.initialize();
 
-            // Test different contexts lead to different prompt selections
             const jsContext: CodeContext = {
                 selectedText: 'function test() {}',
                 language: 'javascript',
@@ -261,7 +253,6 @@ suite('PromptManager Integration Tests', () => {
         test('should coordinate validation with error handling', async () => {
             await promptManager.initialize();
 
-            // Add an invalid prompt that will fail validation
             const invalidPrompt = {
                 id: 'invalid-test',
                 name: 'Invalid Test',
@@ -340,7 +331,6 @@ suite('PromptManager Integration Tests', () => {
         test('should handle template processing errors', async () => {
             await promptManager.initialize();
 
-            // Add a prompt with invalid template structure (missing required fields)
             const problematicPrompt: JsonPrompt = {
                 id: 'problematic',
                 name: 'Problematic Prompt',
@@ -418,7 +408,6 @@ suite('PromptManager Integration Tests', () => {
             assert.ok(stats.errorStats);
             assert.ok(stats.recoveryCapabilities);
 
-            // Verify structure
             assert.ok(typeof stats.promptSystem.totalPrompts === 'number');
             assert.ok(typeof stats.promptSystem.promptsByCategory === 'object');
         });
@@ -492,7 +481,6 @@ suite('PromptManager Integration Tests', () => {
 
             const result = await promptManager.processRequest(UserAction.CODE_REVIEW, codeContext);
 
-            // Verify comprehensive variable preparation
             const expectedVariables = [
                 'language', 'selectedCode', 'code', 'filePath', 'fileName',
                 'errorMessage', 'lineNumber', 'experienceLevel'
@@ -588,7 +576,6 @@ suite('PromptManager Integration Tests', () => {
         test('should provide descriptive error messages when specific prompts are missing', async () => {
             await promptManager.initialize();
             
-            // Add only one prompt to test specific missing prompt scenario
             const testPrompt: JsonPrompt = {
                 id: 'test-only',
                 name: 'Test Only Prompt',
@@ -642,12 +629,10 @@ suite('PromptManager Integration Tests', () => {
                 await promptManager.processRequest(UserAction.CODE_REVIEW, codeContext);
                 assert.fail('Should have thrown an error');
             } catch (error) {
-                // Verify error was thrown
                 assert.ok(error instanceof Error);
                 assert.ok(error.message.includes('No JSON prompt available'));
             }
 
-            // Verify error was logged
             const errorStats = promptErrorHandler.getErrorStats();
             assert.ok(Object.values(errorStats).some(stat => stat.count > 0), 'Should log errors when prompts unavailable');
         });
@@ -655,7 +640,6 @@ suite('PromptManager Integration Tests', () => {
         test('should handle validation errors without legacy fallback', async () => {
             await promptManager.initialize();
 
-            // Add an invalid prompt
             const invalidPrompt = {
                 id: 'invalid-test',
                 name: 'Invalid Test',
@@ -701,7 +685,6 @@ suite('PromptManager Integration Tests', () => {
                     'Should throw validation error without legacy fallback'
                 );
 
-                // Verify error was logged
                 const errorStats = promptErrorHandler.getErrorStats();
                 assert.ok(Object.values(errorStats).some(stat => stat.count > 0), 'Should log validation errors');
             } finally {
@@ -712,10 +695,8 @@ suite('PromptManager Integration Tests', () => {
         test('should ensure no legacy prompt creation methods exist', async () => {
             await promptManager.initialize();
 
-            // Verify that PromptManager doesn't have legacy methods
             assert.strictEqual(typeof (promptManager as any).createLegacyPrompt, 'undefined', 'Should not have createLegacyPrompt method');
             
-            // Verify that processRequest doesn't have legacy fallback paths
             const codeContext: CodeContext = {
                 selectedText: 'test code',
                 language: 'javascript'

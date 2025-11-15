@@ -80,7 +80,6 @@ export class PromptSystem {
         const templatesDir = path.join(__dirname, 'templates');
         
         try {
-            // Check if templates directory exists
             if (!fs.existsSync(templatesDir)) {
                 console.warn(`Templates directory not found at: ${templatesDir}`);
                 return;

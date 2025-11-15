@@ -3,7 +3,7 @@
   "displayName": "Debug Buddy",
   "description": "Debug Buddy is your AI mentor — it helps you understand and resolve errors by offering thoughtful suggestions, encouraging you to think instead of instantly solving everything for you.",
   "publisher": "JagjeevanKashid",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -141,7 +141,13 @@
         "DebugBuddy.model": {
           "type": "string",
           "default": "",
-          "description": "AI model to use for explanations",
+          "description": "AI provider to use for explanations (e.g., OpenAI, Anthropic, Gemini, Groq, Xai, OpenRouter)",
+          "scope": "application"
+        },
+        "DebugBuddy.customModel": {
+          "type": "string",
+          "default": "",
+          "description": "Custom model name to use with the selected provider (e.g., gpt-4, claude-3-5-sonnet-latest, gemini-2.0-flash-exp)",
           "scope": "application"
         },
         "DebugBuddy.useWebview": {

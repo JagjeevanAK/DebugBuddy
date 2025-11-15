@@ -57,19 +57,16 @@ export class LazyPromptLoader {
      * Get a prompt, loading it lazily if needed
      */
     async getPrompt(key: string): Promise<JsonPrompt | null> {
-        // Check cache first
         const cached = this.cache.get(key);
         if (cached) {
             return cached;
         }
 
-        // Check if we have a lazy entry for this prompt
         const lazyEntry = this.lazyEntries.get(key);
         if (!lazyEntry) {
             return null;
         }
 
-        // Check if already loading
         if (lazyEntry.loading) {
             return await lazyEntry.loading;
         }
@@ -254,7 +251,6 @@ export class LazyPromptLoader {
         
         for (const [key, entry] of this.lazyEntries) {
             if (entry.loaded && this.cache.has(key)) {
-                // Check if we should unload this prompt
                 const cacheEntry = this.cache.get(key);
                 if (cacheEntry && (now - entry.lastModified) > maxIdleTime) {
                     this.cache.delete(key);
@@ -285,7 +281,6 @@ export class LazyPromptLoader {
                 const filePath = path.join(directory, file);
                 const stats = await fs.promises.stat(filePath);
                 
-                // Create prompt key from filename (without extension)
                 const key = path.basename(file, '.json');
                 
                 this.lazyEntries.set(key, {

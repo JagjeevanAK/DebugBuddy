@@ -325,7 +325,6 @@ export class HtmlTemplateSystem implements IHtmlTemplateSystem {
     private getScriptSection(): string {
         return `
     <script>
-        // Handle theme changes and other messages
         window.addEventListener('message', event => {
             const message = event.data;
             switch (message.command) {
@@ -355,7 +354,6 @@ export class HtmlTemplateSystem implements IHtmlTemplateSystem {
         
         // Enhanced copy functionality with better error handling
         document.addEventListener('DOMContentLoaded', function() {
-            // Add copy functionality to code blocks
             const codeBlocks = document.querySelectorAll('pre code');
             codeBlocks.forEach(function(codeBlock, index) {
                 const pre = codeBlock.parentElement;
@@ -399,7 +397,6 @@ export class HtmlTemplateSystem implements IHtmlTemplateSystem {
                                 await navigator.clipboard.writeText(codeText);
                                 showCopySuccess(copyButton);
                             } else {
-                                // Fallback for older browsers or non-secure contexts
                                 const textArea = document.createElement('textarea');
                                 textArea.value = codeText;
                                 textArea.style.position = 'fixed';
@@ -430,7 +427,6 @@ export class HtmlTemplateSystem implements IHtmlTemplateSystem {
                 }
             });
             
-            // Add expand/collapse functionality to long content sections
             const longSections = document.querySelectorAll('.content > div, .content > section');
             longSections.forEach(function(section) {
                 if (section.scrollHeight > 400) {

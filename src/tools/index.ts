@@ -2,6 +2,7 @@ import { anthropicTool } from "./anthropic";
 import { geminiTool } from "./gemini";
 import { groqTool } from "./groq";
 import { openaiTool } from "./openai";
+import { openrouterTool } from "./openrouter";
 import { xaiTool } from "./xai";
 
 interface ProviderResponse {
@@ -21,6 +22,8 @@ export const getTool = {
                 return groqTool(prompt);
             case "OpenAI":
                 return openaiTool(prompt);
+            case "OpenRouter":
+                return openrouterTool(prompt);
             case "Xai":
                 return xaiTool(prompt);
             default:
@@ -29,5 +32,4 @@ export const getTool = {
     }
 };
 
-// Export types for use by other modules
 export type { ProviderResponse };

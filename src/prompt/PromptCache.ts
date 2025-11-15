@@ -67,7 +67,6 @@ export class PromptCache {
     set(key: string, prompt: JsonPrompt): void {
         const size = this.calculatePromptSize(prompt);
         
-        // Check if we need to evict entries
         this.ensureCapacity(size);
         
         const entry: CacheEntry = {
@@ -77,7 +76,6 @@ export class PromptCache {
             size
         };
         
-        // Remove existing entry if present
         if (this.cache.has(key)) {
             const oldEntry = this.cache.get(key)!;
             this.stats.totalSize -= oldEntry.size;
@@ -156,14 +154,12 @@ export class PromptCache {
 
         const entries = Array.from(this.cache.entries());
         
-        // Sort by access pattern (LRU with access count consideration)
         entries.sort(([, a], [, b]) => {
             const aScore = a.lastAccessed + (a.accessCount * 1000);
             const bScore = b.lastAccessed + (b.accessCount * 1000);
             return aScore - bScore;
         });
 
-        // Remove least valuable entries
         const targetSize = Math.floor(this.maxSize * 0.8);
         const targetMemory = this.maxMemoryMB * 0.7;
         
@@ -212,7 +208,6 @@ export class PromptCache {
             const jsonString = JSON.stringify(prompt);
             return new Blob([jsonString]).size;
         } catch (error) {
-            // Fallback estimation
             const baseSize = 1000; // Base object overhead
             const stringFields = [
                 prompt.id, prompt.name, prompt.description,
@@ -228,12 +223,10 @@ export class PromptCache {
      * Ensure cache has capacity for new entry
      */
     private ensureCapacity(newEntrySize: number): void {
-        // Check size limit
         while (this.cache.size >= this.maxSize) {
             this.evictLRU();
         }
 
-        // Check memory limit
         const projectedMemory = (this.stats.totalSize + newEntrySize) / (1024 * 1024);
         while (projectedMemory > this.maxMemoryMB && this.cache.size > 0) {
             this.evictLRU();
@@ -279,20 +272,17 @@ export class PromptCache {
         const issues: string[] = [];
         const recommendations: string[] = [];
 
-        // Check hit rate
         if (this.stats.hitRate < 70 && this.stats.hits + this.stats.misses > 50) {
             issues.push(`Low cache hit rate: ${this.stats.hitRate.toFixed(1)}%`);
             recommendations.push('Consider increasing cache size or preloading more prompts');
         }
 
-        // Check memory usage
         const memoryUsage = this.getMemoryUsageMB();
         if (memoryUsage > this.maxMemoryMB * 0.9) {
             issues.push(`High memory usage: ${memoryUsage.toFixed(1)}MB`);
             recommendations.push('Consider reducing cache size or increasing memory limit');
         }
 
-        // Check eviction rate
         const totalOperations = this.stats.hits + this.stats.misses;
         const evictionRate = totalOperations > 0 ? (this.stats.evictions / totalOperations) * 100 : 0;
         if (evictionRate > 10) {

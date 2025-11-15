@@ -313,7 +313,6 @@ export class ErrorHandler implements IErrorHandler {
     validateRecoveryCapabilities(): { canRecover: boolean; issues: string[] } {
         const issues: string[] = [];
         
-        // Check if we have too many frequent errors
         const frequentErrors = Object.values(PromptError).filter(error => 
             this.isErrorFrequent(error, 10)
         );
@@ -322,7 +321,6 @@ export class ErrorHandler implements IErrorHandler {
             issues.push(`Frequent errors detected: ${frequentErrors.join(', ')}`);
         }
         
-        // Check if error callbacks are working
         if (this.errorCallbacks.length === 0) {
             issues.push('No error callbacks registered - errors may not be properly handled');
         }

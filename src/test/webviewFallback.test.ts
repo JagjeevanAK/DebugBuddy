@@ -19,7 +19,6 @@ suite('Webview Fallback Mechanism Tests', () => {
     });
 
     test('should fallback to terminal when webview creation fails', async () => {
-        // Test with uninitialized webview manager
         const content = 'Test content for fallback';
         const fileName = 'test.js';
 
@@ -47,7 +46,6 @@ suite('Webview Fallback Mechanism Tests', () => {
     test('should detect critical webview errors', () => {
         const criticalError = new Error('Extension context is invalid or not available');
         
-        // Simulate logging multiple critical errors to trigger degraded/critical status
         for (let i = 0; i < 6; i++) {
             errorLogger.logError('createWebview', criticalError, true, {});
         }
@@ -81,7 +79,6 @@ suite('Webview Fallback Mechanism Tests', () => {
     });
 
     test('should provide health recommendations', () => {
-        // Simulate multiple critical errors
         for (let i = 0; i < 5; i++) {
             errorLogger.logError('createWebview', new Error('Failed to create webview panel'), true, {});
         }

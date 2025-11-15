@@ -41,10 +41,8 @@ class ConfigurationChangeHandler implements ConfigChangeHandler {
    */
   public onConfigurationChanged(event: vscode.ConfigurationChangeEvent): void {
     try {
-      // Handle API key changes
       if (event.affectsConfiguration('DebugBuddy.apiKey')) {
         try {
-          // Get the new API key value from configuration
           const newApiKey = vscode.workspace.getConfiguration('DebugBuddy').get<string>('apiKey');
           
           // Update the cache with the new value
@@ -58,7 +56,6 @@ class ConfigurationChangeHandler implements ConfigChangeHandler {
         }
       }
 
-      // Handle prompt configuration changes
       if (event.affectsConfiguration('DebugBuddy.prompts')) {
         try {
           const configManager = ConfigurationManager.getInstance();

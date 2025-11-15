@@ -176,7 +176,6 @@ export class PerformanceTests {
         const iterations = 100;
 
         for (let i = 0; i < iterations; i++) {
-            // Simulate full pipeline
             this.cache.set(prompt.id, prompt);
             const cached = this.cache.get(prompt.id);
             if (cached) {

@@ -46,7 +46,6 @@ suite('Extension Lifecycle Integration Tests', () => {
   });
 
   test('should initialize cache manager during activation', () => {
-    // Verify cache starts uninitialized
     assert.strictEqual(apiKeyCache.isInitialized(), false);
 
     activate(mockContext);

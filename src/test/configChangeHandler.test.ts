@@ -41,7 +41,6 @@ suite('Configuration Change Handler Tests', () => {
     // Trigger configuration change
     configChangeHandler.onConfigurationChanged(mockEvent);
 
-    // Verify cache was updated
     assert.strictEqual(apiKeyCache.get(), 'test-api-key-123');
     assert.strictEqual(apiKeyCache.isInitialized(), true);
 
@@ -61,7 +60,6 @@ suite('Configuration Change Handler Tests', () => {
     // Trigger configuration change
     configChangeHandler.onConfigurationChanged(mockEvent);
 
-    // Verify cache was not affected
     assert.strictEqual(apiKeyCache.isInitialized(), false);
     assert.strictEqual(apiKeyCache.get(), undefined);
   });
@@ -87,7 +85,6 @@ suite('Configuration Change Handler Tests', () => {
     // Trigger configuration change
     configChangeHandler.onConfigurationChanged(mockEvent);
 
-    // Verify cache was updated with undefined value
     assert.strictEqual(apiKeyCache.get(), undefined);
     assert.strictEqual(apiKeyCache.isInitialized(), true);
 
@@ -296,7 +293,6 @@ suite('Configuration Change Handler Tests', () => {
     // Trigger configuration change
     configChangeHandler.onConfigurationChanged(mockEvent);
 
-    // Verify listener was called with correct settings
     assert.strictEqual(listenerCalled, true);
     assert.ok(receivedSettings !== null);
     assert.strictEqual(receivedSettings.experienceLevel, 'advanced');

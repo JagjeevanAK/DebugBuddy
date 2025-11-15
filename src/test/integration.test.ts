@@ -12,7 +12,6 @@ suite('Prompt System Integration', () => {
         const validator = new PromptValidator();
         const errorHandler = new ErrorHandler(false); // Disable console logging
 
-        // Test invalid prompt
         const invalidPrompt = {
             id: 'test',
             // Missing required fields
@@ -22,7 +21,6 @@ suite('Prompt System Integration', () => {
         assert.strictEqual(validation.isValid, false);
         assert.ok(validation.errors.length > 0);
 
-        // Test error handling
         const strategy = errorHandler.handleError(PromptError.VALIDATION_ERROR, {
             promptId: 'test',
             errors: validation.errors
@@ -74,7 +72,6 @@ suite('Prompt System Integration', () => {
         assert.strictEqual(stats[PromptError.VALIDATION_ERROR].count, 1);
         assert.strictEqual(stats[PromptError.CONFIGURATION_ERROR].count, 0);
 
-        // Test frequent error detection
         assert.strictEqual(errorHandler.isErrorFrequent(PromptError.TEMPLATE_PARSE_ERROR, 2), true);
         assert.strictEqual(errorHandler.isErrorFrequent(PromptError.VALIDATION_ERROR, 2), false);
     });
@@ -99,7 +96,6 @@ suite('Prompt System Integration', () => {
     test('should handle graceful fallback strategies', () => {
         const errorHandler = new ErrorHandler(false);
 
-        // Test different error types have appropriate fallback strategies
         const templateError = errorHandler.handleError(PromptError.TEMPLATE_PARSE_ERROR, {});
         assert.strictEqual(templateError.useSimplePrompt, false);
         assert.strictEqual(templateError.fallbackPromptId, undefined);

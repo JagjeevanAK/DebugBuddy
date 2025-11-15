@@ -64,7 +64,6 @@ suite('Configuration Integration Tests', () => {
         // Initialize handler and trigger configuration change
         configChangeHandler.initialize();
         
-        // Simulate configuration change event
         const mockEvent: vscode.ConfigurationChangeEvent = {
             affectsConfiguration: (section: string) => section === 'DebugBuddy.prompts'
         };
@@ -158,7 +157,6 @@ suite('Configuration Integration Tests', () => {
 
         await configManager.migrateConfiguration();
 
-        // Verify migration occurred
         assert.ok(updateCalls.some(call => 
             call.key === 'prompts.experienceLevel' && call.value === 'beginner'
         ));

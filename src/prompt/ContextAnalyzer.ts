@@ -67,7 +67,6 @@ export class ContextAnalyzer implements IContextAnalyzer {
             return actionPrompt;
         }
 
-        // Fallback to general prompt
         return 'general';
     }
 
@@ -100,7 +99,6 @@ export class ContextAnalyzer implements IContextAnalyzer {
             return context.language;
         }
 
-        // Fallback to plaintext
         return 'plaintext';
     }
 
@@ -237,7 +235,6 @@ export class ContextAnalyzer implements IContextAnalyzer {
             return 'docker';
         }
 
-        // Return language as file type
         return language || 'source';
     }
 

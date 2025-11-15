@@ -88,7 +88,6 @@ export class PromptManager implements IPromptManager {
             const registry = this.promptSystem.getRegistry();
             const prompt = await registry.getPrompt(promptType);
 
-            // Return descriptive error if JSON prompt not found
             if (!prompt) {
                 const availableTypes = Array.from(registry.getAllPrompts().keys());
                 let errorMessage: string;
@@ -253,12 +252,10 @@ export class PromptManager implements IPromptManager {
             action: promptContext.action
         };
 
-        // Add language-specific criteria if available
         if (promptContext.language) {
             variables.languageSpecificCriteria = this.getLanguageSpecificCriteria(promptContext.language);
         }
 
-        // Add experience level guidance
         variables.experienceLevelGuidance = this.getExperienceLevelGuidance(globalSettings.experienceLevel);
 
         return variables;
@@ -383,7 +380,6 @@ export class PromptManager implements IPromptManager {
                 }
             }
 
-            // Handle frequent errors by suggesting system recovery
             if (promptErrorHandler.isErrorFrequent(error, 10)) {
                 this.handleFrequentError(error);
             }
@@ -432,13 +428,11 @@ export class PromptManager implements IPromptManager {
         const issues: string[] = [];
         const recommendations: string[] = [];
 
-        // Check initialization status
         if (!this.initialized) {
             issues.push('PromptManager not initialized');
             recommendations.push('Call initialize() before using the prompt system');
         }
 
-        // Check prompt availability
         const registry = this.promptSystem.getRegistry();
         const promptCount = registry.getAllPrompts().size;
         if (promptCount === 0) {
@@ -446,7 +440,6 @@ export class PromptManager implements IPromptManager {
             recommendations.push('Load prompt templates from the templates directory');
         }
 
-        // Check validation results
         const validationResults = this.validatePromptIntegrity();
         const invalidCount = validationResults.filter(r => !r.isValid).length;
         if (invalidCount > 0) {
@@ -454,7 +447,6 @@ export class PromptManager implements IPromptManager {
             recommendations.push('Fix or remove invalid prompt templates');
         }
 
-        // Check error recovery capabilities
         const recoveryCheck = promptErrorHandler.validateRecoveryCapabilities();
         if (!recoveryCheck.canRecover) {
             issues.push(...recoveryCheck.issues);

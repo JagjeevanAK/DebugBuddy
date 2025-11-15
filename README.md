@@ -12,15 +12,16 @@ Hover over any error or warning in your code to get instant AI-powered explanati
 
 Get comprehensive code analysis for entire files. Right-click on any file or use the command palette to review your code for potential issues, best practices, and improvement suggestions.
 
-### 🤖 **Multi-Provider AI Support**
+### Multi-Provider AI Support
 
-Choose your preferred AI provider based on your needs:
+Choose your preferred AI provider and model based on your needs:
 
-- **OpenAI** (GPT-4o-mini) - Fast and reliable
-- **Anthropic** (Claude 3.5 Sonnet) - Deep reasoning
-- **Google Gemini** (Gemini 2.0 Flash) - Quick responses
-- **Groq** (Llama 3.3) - High-speed inference
-- **xAI** (Grok 3) - Alternative perspective
+- **OpenAI** - Choose from GPT-4o, GPT-4o-mini, or other models
+- **Anthropic** - Select Claude 3.5 Sonnet, Claude 3 Opus, or other variants
+- **Google Gemini** - Pick Gemini 2.0 Flash, Gemini 1.5 Pro, or other models
+- **Groq** - Configure Llama 3.3 70B, Mixtral 8x7B, or other high-speed models
+- **xAI** - Use Grok Beta or other available models
+- **OpenRouter** - Access 200+ models from multiple providers through a single API
 
 ## How to Use
 
@@ -29,9 +30,10 @@ Choose your preferred AI provider based on your needs:
 1. Install DebugBuddy extension
 2. Press `Cmd+Shift+P` (Mac) or `Ctrl+Shift+P` (Windows/Linux)
 3. Type "Set API Key for DebugBuddy"
-4. Select your AI provider (OpenAI, Gemini, etc.)
+4. Select your AI provider (OpenAI, Anthropic, Gemini, Groq, xAI, or OpenRouter)
 5. Paste your API key
-6. Start coding!
+6. Choose your preferred model (e.g., gpt-4o, claude-3-5-sonnet-latest, gemini-2.0-flash-exp)
+7. Start coding!
 
 ### Get Error Help
 
@@ -42,15 +44,15 @@ Choose your preferred AI provider based on your needs:
 ### Review Your Code
 
 1. Open any code file
-2. Right-click in editor → "Review Current File with DebugBuddy"
-   OR press `Cmd+Shift+P` → "Review Current File with DebugBuddy"
+2. Right-click in editor: "Review Current File with DebugBuddy"
+   OR press `Cmd+Shift+P` and select "Review Current File with DebugBuddy"
 3. View the comprehensive analysis in the webview panel
 
 ### Manage API Keys
 
-- **View Key**: `Cmd+Shift+P` → "Show API Key of DebugBuddy"
-- **Change Key**: `Cmd+Shift+P` → "Set API Key for DebugBuddy"
-- **Delete Key**: `Cmd+Shift+P` → "Delete API Key of DebugBuddy"
+- **View Key**: Press `Cmd+Shift+P` and select "Show API Key of DebugBuddy"
+- **Change Key**: Press `Cmd+Shift+P` and select "Set API Key for DebugBuddy"
+- **Delete Key**: Press `Cmd+Shift+P` and select "Delete API Key of DebugBuddy"
 
 ## Commands
 

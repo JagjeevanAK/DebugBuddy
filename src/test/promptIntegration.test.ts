@@ -122,7 +122,6 @@ suite('Prompt System Integration', () => {
         test('should analyze code context correctly', async () => {
             await promptManager.initialize();
             
-            // Add a mock prompt for testing
             const registry = promptManager.getPromptSystem().getRegistry();
             const mockPrompt = {
                 id: 'debug-analysis',
@@ -170,7 +169,6 @@ suite('Prompt System Integration', () => {
         test('should substitute variables in prompts', async () => {
             await promptManager.initialize();
             
-            // Add a mock prompt for testing
             const registry = promptManager.getPromptSystem().getRegistry();
             const mockPrompt = {
                 id: 'code-review',

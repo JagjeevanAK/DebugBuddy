@@ -273,7 +273,6 @@ export class MemoryMonitor {
         const recommendations: string[] = [];
         let status: 'healthy' | 'warning' | 'critical' = 'healthy';
 
-        // Check heap usage
         if (current.heapUsed > this.thresholds.critical) {
             status = 'critical';
             issues.push(`Critical heap usage: ${current.heapUsed}MB`);
@@ -284,7 +283,6 @@ export class MemoryMonitor {
             recommendations.push('Consider running cleanup');
         }
 
-        // Check memory trend
         const stats = this.getMemoryStats();
         if (stats.trend === 'increasing') {
             if (status === 'healthy') {status = 'warning';}
@@ -292,7 +290,6 @@ export class MemoryMonitor {
             recommendations.push('Monitor for memory leaks');
         }
 
-        // Check component usage
         const totalComponentUsage = Array.from(this.components.values())
             .reduce((sum, comp) => sum + comp.estimatedSize, 0);
         
@@ -317,18 +314,15 @@ export class MemoryMonitor {
         const suggestions: string[] = [];
         const stats = this.getMemoryStats();
 
-        // Check for high external memory
         if (stats.current.external > 20) {
             suggestions.push('High external memory usage detected - check for large buffers or native modules');
         }
 
-        // Check for memory fragmentation
         const fragmentation = (stats.current.heapTotal - stats.current.heapUsed) / stats.current.heapTotal;
         if (fragmentation > 0.5) {
             suggestions.push('High memory fragmentation - consider forcing garbage collection');
         }
 
-        // Check component efficiency
         const inefficientComponents = Array.from(this.components.values())
             .filter(comp => comp.estimatedSize > 10)
             .sort((a, b) => b.estimatedSize - a.estimatedSize);
@@ -337,7 +331,6 @@ export class MemoryMonitor {
             suggestions.push(`Optimize high-memory components: ${inefficientComponents.slice(0, 3).map(c => c.name).join(', ')}`);
         }
 
-        // Check for memory leaks
         if (stats.trend === 'increasing' && this.snapshots.length > 10) {
             const recentGrowth = this.snapshots.slice(-5).reduce((sum, snapshot, index, arr) => {
                 if (index === 0) {return 0;}

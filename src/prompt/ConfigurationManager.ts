@@ -122,27 +122,23 @@ export class ConfigurationManager implements IConfigurationManager {
         try {
             const settings = this.getGlobalSettings();
 
-            // Validate experience level
             const validExperienceLevels = ['beginner', 'intermediate', 'advanced'];
             if (!validExperienceLevels.includes(settings.experienceLevel)) {
                 result.errors.push(`Invalid experience level: ${settings.experienceLevel}. Must be one of: ${validExperienceLevels.join(', ')}`);
                 result.isValid = false;
             }
 
-            // Validate max suggestions
             if (!Number.isInteger(settings.maxSuggestions) || settings.maxSuggestions < 1 || settings.maxSuggestions > 20) {
                 result.errors.push(`Max suggestions must be an integer between 1 and 20, got: ${settings.maxSuggestions}`);
                 result.isValid = false;
             }
 
-            // Validate output verbosity
             const validVerbosityLevels = ['minimal', 'standard', 'detailed'];
             if (!validVerbosityLevels.includes(settings.outputVerbosity)) {
                 result.errors.push(`Invalid output verbosity: ${settings.outputVerbosity}. Must be one of: ${validVerbosityLevels.join(', ')}`);
                 result.isValid = false;
             }
 
-            // Validate custom focus areas
             if (!Array.isArray(settings.customFocusAreas)) {
                 result.errors.push('Custom focus areas must be an array');
                 result.isValid = false;
@@ -150,7 +146,6 @@ export class ConfigurationManager implements IConfigurationManager {
                 result.warnings.push('Some custom focus areas are empty or invalid');
             }
 
-            // Validate prompt directory if specified
             if (settings.promptDirectory && typeof settings.promptDirectory !== 'string') {
                 result.errors.push('Prompt directory must be a string');
                 result.isValid = false;
@@ -158,7 +153,6 @@ export class ConfigurationManager implements IConfigurationManager {
                 result.warnings.push('Prompt directory is specified but empty');
             }
 
-            // Validate boolean settings
             if (typeof settings.includeExplanations !== 'boolean') {
                 result.errors.push('Include explanations must be a boolean value');
                 result.isValid = false;
@@ -174,7 +168,6 @@ export class ConfigurationManager implements IConfigurationManager {
                 result.isValid = false;
             }
 
-            // Validate individual prompt configurations
             const config = vscode.workspace.getConfiguration(this.configSection);
             const promptConfigs = config.get<Record<string, PromptConfig>>('prompts.configs', {});
             
@@ -270,17 +263,14 @@ export class ConfigurationManager implements IConfigurationManager {
     public async migrateConfiguration(): Promise<void> {
         const config = vscode.workspace.getConfiguration(this.configSection);
         
-        // Check if this is a fresh installation or needs migration
         const hasPromptSettings = config.has('prompts.experienceLevel');
         const currentVersion = config.get<string>('prompts.configVersion', '0.0.0');
         const targetVersion = '1.0.0';
         
         if (!hasPromptSettings) {
-            // First time setup - initialize with defaults
             await this.initializeDefaultConfiguration();
             console.log('DebugBuddy: Initialized prompt configuration with default values');
         } else if (currentVersion !== targetVersion) {
-            // Migration needed
             await this.performConfigurationMigration(currentVersion, targetVersion);
             console.log(`DebugBuddy: Migrated configuration from ${currentVersion} to ${targetVersion}`);
         }
@@ -343,7 +333,6 @@ export class ConfigurationManager implements IConfigurationManager {
     private async migrateLegacyConfiguration(): Promise<void> {
         const config = vscode.workspace.getConfiguration(this.configSection);
         
-        // Check for legacy settings and migrate them
         const legacyMappings: Record<string, string> = {
             'prompt.experienceLevel': 'prompts.experienceLevel',
             'prompt.maxSuggestions': 'prompts.maxSuggestions',
@@ -356,8 +345,6 @@ export class ConfigurationManager implements IConfigurationManager {
             if (config.has(legacyKey)) {
                 const value = config.get(legacyKey);
                 await config.update(newKey, value, vscode.ConfigurationTarget.Global);
-                
-                // Remove legacy setting
                 await config.update(legacyKey, undefined, vscode.ConfigurationTarget.Global);
                 console.log(`DebugBuddy: Migrated ${legacyKey} to ${newKey}`);
             }
