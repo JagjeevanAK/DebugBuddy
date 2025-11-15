@@ -32,7 +32,6 @@ export class HtmlTemplateSystem implements IHtmlTemplateSystem {
         const title = options.title || this.defaultTitle;
         const enableScripts = options.enableScripts !== false;
         
-        // Get current theme configuration
         const themeConfig = options.themeConfiguration || this.themeManager.getCurrentTheme();
         const themeStyles = this.themeManager.generateThemeCSS(themeConfig);
         const customStyles = options.customStyles || '';
@@ -434,7 +433,7 @@ export class HtmlTemplateSystem implements IHtmlTemplateSystem {
             // Add expand/collapse functionality to long content sections
             const longSections = document.querySelectorAll('.content > div, .content > section');
             longSections.forEach(function(section) {
-                if (section.scrollHeight > 400) { // If content is taller than 400px
+                if (section.scrollHeight > 400) {
                     const collapseButton = document.createElement('button');
                     collapseButton.className = 'collapse-button';
                     collapseButton.textContent = 'Show Less';
@@ -473,7 +472,7 @@ export class HtmlTemplateSystem implements IHtmlTemplateSystem {
         
         function showCopySuccess(button) {
             const originalText = button.textContent;
-            button.textContent = '✓ Copied!';
+            button.textContent = 'Copied!';
             button.style.background = 'var(--vscode-testing-iconPassed, #73c991)';
             button.style.color = 'var(--vscode-editor-background, #ffffff)';
             
@@ -486,7 +485,7 @@ export class HtmlTemplateSystem implements IHtmlTemplateSystem {
         
         function showCopyError(button) {
             const originalText = button.textContent;
-            button.textContent = '✗ Failed';
+            button.textContent = 'Failed';
             button.style.background = 'var(--vscode-errorForeground, #f48771)';
             button.style.color = 'var(--vscode-editor-background, #ffffff)';
             

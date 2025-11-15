@@ -90,5 +90,4 @@ class ApiKeyCacheService implements ApiKeyCache {
   }
 }
 
-// Export the singleton instance getter
 export const apiKeyCache = ApiKeyCacheService.getInstance();

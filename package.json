@@ -3,7 +3,7 @@
   "displayName": "Debug Buddy",
   "description": "Debug Buddy is your AI mentor — it helps you understand and resolve errors by offering thoughtful suggestions, encouraging you to think instead of instantly solving everything for you.",
   "publisher": "JagjeevanKashid",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "license": "MIT",
   "repository": {
     "type": "git",

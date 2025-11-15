@@ -135,7 +135,7 @@ export class WebviewErrorLogger {
         }
         
         if (error.fallbackUsed) {
-            this.outputChannel.appendLine('✓ Fallback to terminal display was used');
+            this.outputChannel.appendLine('Fallback to terminal display was used');
         }
         
         this.outputChannel.appendLine('---');

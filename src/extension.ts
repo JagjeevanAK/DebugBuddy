@@ -1,5 +1,3 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import { vscode } from "./helper/vscode";
 import {
 	deleteKey,
@@ -18,8 +16,6 @@ import { PromptManager } from "./prompt/PromptManager";
 
 export async function activate(context: vscode.ExtensionContext) {
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "DebugBuddy" is now active!');
 
 	// Initialize API key cache manager
@@ -222,7 +218,6 @@ export async function activate(context: vscode.ExtensionContext) {
 	);
 }
 
-// This method is called when your extension is deactivated
 export function deactivate() {
 	// Clear the API key cache to remove sensitive data from memory
 	try {

@@ -649,7 +649,7 @@ export class ValidationUtils {
         for (const detail of report.details) {
             lines.push(`### ${detail.promptName || path.basename(detail.filePath)}`);
             lines.push(`- **File**: ${detail.filePath}`);
-            lines.push(`- **Status**: ${detail.isValid ? '✅ Valid' : '❌ Invalid'}`);
+            lines.push(`- **Status**: ${detail.isValid ? 'Valid' : 'Invalid'}`);
             
             if (detail.errors.length > 0) {
                 lines.push('- **Errors**:');
@@ -722,7 +722,7 @@ export class ValidationUtils {
     <div class="detail">
         <h3>${detail.promptName || path.basename(detail.filePath)}</h3>
         <p><strong>File:</strong> ${detail.filePath}</p>
-        <p><strong>Status:</strong> <span class="${detail.isValid ? 'valid' : 'invalid'}">${detail.isValid ? '✅ Valid' : '❌ Invalid'}</span></p>
+        <p><strong>Status:</strong> <span class="${detail.isValid ? 'valid' : 'invalid'}">${detail.isValid ? 'Valid' : 'Invalid'}</span></p>
         
         ${detail.errors.length > 0 ? `
         <p><strong>Errors:</strong></p>

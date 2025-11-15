@@ -29,7 +29,6 @@ export class PromptManager implements IPromptManager {
         this.configManager = ConfigurationManager.getInstance();
         this.promptValidator = new PromptValidator();
         
-        // Set up error handling callbacks
         this.setupErrorHandling();
     }
 
@@ -54,7 +53,6 @@ export class PromptManager implements IPromptManager {
         const result = await withAsyncErrorHandling(async () => {
             await this.promptSystem.initialize();
             
-            // Validate all loaded prompts
             const validationResults = this.validatePromptIntegrity();
             const invalidPrompts = validationResults.filter(result => !result.isValid);
             
@@ -84,11 +82,9 @@ export class PromptManager implements IPromptManager {
         }
 
         try {
-            // 1. Analyze context to determine appropriate prompt
             const promptContext = this.contextAnalyzer.analyzeContext(action, context);
             const promptType = this.contextAnalyzer.determinePromptType(promptContext);
 
-            // 2. Get the appropriate prompt template (with lazy loading)
             const registry = this.promptSystem.getRegistry();
             const prompt = await registry.getPrompt(promptType);
 
