@@ -47,7 +47,7 @@ suite('PromptManager Integration Tests', () => {
             assert.strictEqual(promptManager.isInitialized(), true);
             assert.strictEqual(promptSystem.isInitialized(), true);
             
-            const stats = manager.getStats();
+            const stats = promptManager.getStats();
             assert.ok(stats);
             assert.ok(stats.initialized);
         });
