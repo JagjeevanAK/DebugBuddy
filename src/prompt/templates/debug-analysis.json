@@ -1,193 +1,22 @@
 {
   "id": "debug-analysis",
   "name": "Enhanced Debug Analysis",
-  "description": "Advanced error analysis with context integration, stack trace parsing, and language-specific debugging strategies",
-  "category": "debug_analysis",
-  "version": "2.0.0",
-  "author": "DebugBuddy Team",
-  "created_date": "2024-01-01",
-  "last_modified": "2024-01-15",
-  "schema_version": "1.0.0",
   "template": {
-    "task": "Perform comprehensive error analysis and debugging assistance for ${language} code",
-    "language": "${language}",
-    "context": {
-      "file_path": "${filePath}",
-      "error_message": "${errorMessage}",
-      "error_type": "${errorType}",
-      "error_line": "${errorLine}",
-      "error_column": "${errorColumn}",
-      "stack_trace": "${stackTrace}",
-      "surrounding_code": "${surroundingCode}",
-      "runtime_context": "${runtimeContext}",
-      "experience_level": "${experienceLevel}",
-      "analysis_depth": "${analysisDepth}"
-    },
-    "instructions": "You are debugging a ${errorType} error in ${language} code. Provide ${analysisDepth} analysis suitable for a ${experienceLevel} developer.\n\n**Error Details:**\n- Type: ${errorType}\n- Message: ${errorMessage}\n- Location: ${filePath}:${errorLine}:${errorColumn}\n- Runtime Context: ${runtimeContext}\n\n**Stack Trace Analysis:**\n${stackTrace}\n\n**Code Context:**\n```${language}\n${surroundingCode}\n```\n\n**Language-Specific Debugging Approach:**\n${languageSpecificDebugging}\n\n**Analysis Framework:**\n1. **Error Classification**: Categorize the error type and severity\n2. **Root Cause Analysis**: Trace the error to its source\n3. **Stack Trace Breakdown**: Parse and explain each frame\n4. **Context Analysis**: Examine surrounding code for clues\n5. **Fix Strategies**: Provide multiple solution approaches\n6. **Prevention**: Suggest practices to avoid similar issues\n7. **Debugging Tools**: Recommend language-specific debugging tools\n\n**Output Format:**\n- Use clear headings and bullet points\n- Include code examples for fixes\n- Provide step-by-step debugging instructions\n- Reference line numbers when applicable\n- Include confidence levels for suggestions",
-    "output_format": {
-      "structure": "comprehensive_debug_report",
-      "include_line_numbers": true,
-      "include_severity": true,
-      "include_explanation": true,
-      "include_fix_suggestion": true,
-      "include_code_examples": true,
-      "include_debugging_steps": true,
-      "include_tool_recommendations": true,
-      "include_prevention_tips": true
-    },
+    "instructions": "Debug this ${errorType} error in ${language}.\n\n**Error:** ${errorMessage} at ${filePath}:${errorLine}\n\n**Stack Trace:**\n${stackTrace}\n\n**Code:**\n```${language}\n${surroundingCode}\n```\n\nProvide:\n1. Root cause explanation\n2. Multiple fix approaches with code examples\n3. Step-by-step debugging instructions\n4. Prevention tips\n\nTailor for ${experienceLevel} developers using ${language}-specific debugging practices.",
     "variables": [
       "language",
-      "filePath",
-      "errorMessage",
       "errorType",
+      "errorMessage",
+      "filePath",
       "errorLine",
-      "errorColumn",
       "stackTrace",
       "surroundingCode",
-      "runtimeContext",
-      "experienceLevel",
-      "analysisDepth",
-      "languageSpecificDebugging"
+      "experienceLevel"
     ]
   },
   "config": {
-    "configurable_fields": [
-      "analysis_depth",
-      "include_similar_errors",
-      "suggest_debugging_tools",
-      "experience_level",
-      "include_performance_impact",
-      "include_security_implications",
-      "max_fix_suggestions",
-      "include_test_cases"
-    ],
     "default_values": {
-      "analysis_depth": "detailed",
-      "include_similar_errors": true,
-      "suggest_debugging_tools": true,
-      "experience_level": "intermediate",
-      "include_performance_impact": false,
-      "include_security_implications": true,
-      "max_fix_suggestions": 5,
-      "include_test_cases": true
-    },
-    "validation_rules": {
-      "analysis_depth": {
-        "type": "string",
-        "enum": ["basic", "detailed", "comprehensive"]
-      },
-      "experience_level": {
-        "type": "string",
-        "enum": ["beginner", "intermediate", "advanced"]
-      },
-      "max_fix_suggestions": {
-        "type": "number",
-        "min": 1,
-        "max": 10
-      }
+      "experience_level": "intermediate"
     }
-  },
-  "error_type_patterns": {
-    "javascript": {
-      "ReferenceError": "Variable or function not defined - check scope and declarations",
-      "TypeError": "Wrong data type usage - verify object properties and method calls",
-      "SyntaxError": "Code parsing error - check brackets, semicolons, and syntax",
-      "RangeError": "Value out of acceptable range - check array indices and numeric limits",
-      "URIError": "URI encoding/decoding issue - validate URL formatting",
-      "EvalError": "eval() function error - consider safer alternatives"
-    },
-    "python": {
-      "NameError": "Variable not defined - check variable names and scope",
-      "TypeError": "Incorrect type operation - verify data types and method compatibility",
-      "ValueError": "Correct type but inappropriate value - validate input ranges",
-      "IndexError": "List index out of range - check array bounds",
-      "KeyError": "Dictionary key not found - verify key existence",
-      "AttributeError": "Object attribute/method not found - check object type and methods",
-      "ImportError": "Module import failed - verify module installation and path",
-      "IndentationError": "Incorrect indentation - check spacing and tabs"
-    },
-    "java": {
-      "NullPointerException": "Null reference access - add null checks",
-      "ArrayIndexOutOfBoundsException": "Array index invalid - validate array bounds",
-      "ClassCastException": "Invalid type casting - verify object types",
-      "IllegalArgumentException": "Invalid method argument - validate input parameters",
-      "NumberFormatException": "String to number conversion failed - validate input format",
-      "ConcurrentModificationException": "Collection modified during iteration - use proper synchronization"
-    },
-    "csharp": {
-      "NullReferenceException": "Null object reference - implement null checks",
-      "IndexOutOfRangeException": "Array/collection index invalid - validate bounds",
-      "ArgumentException": "Invalid argument passed - validate method parameters",
-      "InvalidOperationException": "Operation not valid for current state - check object state",
-      "FormatException": "String format conversion error - validate input format",
-      "StackOverflowException": "Stack overflow - check for infinite recursion"
-    }
-  },
-  "language_specific_debugging": {
-    "javascript": [
-      "Use browser DevTools or Node.js debugger",
-      "Add console.log statements for variable inspection",
-      "Check for async/await issues and promise rejections",
-      "Verify event listener attachments and DOM readiness",
-      "Use try-catch blocks for error handling"
-    ],
-    "typescript": [
-      "Enable strict mode for better type checking",
-      "Use TypeScript compiler for type validation",
-      "Check for type assertion issues",
-      "Verify interface implementations",
-      "Use debugger with source maps"
-    ],
-    "python": [
-      "Use pdb debugger for step-through debugging",
-      "Add print statements for variable inspection",
-      "Check indentation and whitespace issues",
-      "Verify import paths and module availability",
-      "Use try-except blocks for error handling"
-    ],
-    "java": [
-      "Use IDE debugger with breakpoints",
-      "Add System.out.println for variable inspection",
-      "Check classpath and import statements",
-      "Verify object initialization and lifecycle",
-      "Use try-catch blocks for exception handling"
-    ],
-    "csharp": [
-      "Use Visual Studio debugger with breakpoints",
-      "Add Console.WriteLine for variable inspection",
-      "Check using statements and resource disposal",
-      "Verify async/await patterns",
-      "Use try-catch blocks for exception handling"
-    ],
-    "go": [
-      "Use delve debugger for step-through debugging",
-      "Add fmt.Printf statements for variable inspection",
-      "Check for goroutine leaks and race conditions",
-      "Verify error handling patterns",
-      "Use defer statements for cleanup"
-    ],
-    "rust": [
-      "Use rust-gdb or rust-lldb for debugging",
-      "Add println! macros for variable inspection",
-      "Check ownership and borrowing rules",
-      "Verify Result and Option handling",
-      "Use match statements for error handling"
-    ]
-  },
-  "debugging_tools": {
-    "javascript": ["Chrome DevTools", "Node.js Inspector", "VS Code Debugger", "Firefox Developer Tools"],
-    "typescript": ["VS Code Debugger", "Chrome DevTools", "TSC Compiler", "TypeScript Language Server"],
-    "python": ["pdb", "PyCharm Debugger", "VS Code Python", "ipdb", "pudb"],
-    "java": ["IntelliJ Debugger", "Eclipse Debugger", "JDB", "VisualVM"],
-    "csharp": ["Visual Studio Debugger", "VS Code C#", "dotnet CLI", "JetBrains Rider"],
-    "go": ["Delve", "VS Code Go", "GoLand Debugger", "GDB"],
-    "rust": ["rust-gdb", "rust-lldb", "VS Code Rust", "RustRover"]
-  },
-  "metadata": {
-    "supported_languages": ["javascript", "typescript", "python", "java", "csharp", "go", "rust", "cpp", "php", "ruby", "swift", "kotlin"],
-    "required_context": ["errorMessage", "language", "errorType"],
-    "optional_context": ["stackTrace", "surroundingCode", "runtimeContext", "errorLine", "errorColumn"],
-    "performance_notes": "Optimized for complex error analysis. Stack trace parsing is cached for performance.",
-    "supported_error_types": ["runtime", "compile_time", "logic", "performance", "security", "memory", "concurrency"]
   }
 }

@@ -1,103 +1,19 @@
 {
   "id": "documentation",
   "name": "Documentation Generation",
-  "description": "Generates comprehensive documentation for code including API docs, comments, and usage examples",
-  "category": "documentation",
-  "version": "1.0.0",
-  "author": "DebugBuddy Team",
-  "created_date": "2024-01-15",
-  "schema_version": "1.0.0",
   "template": {
-    "task": "Generate comprehensive documentation for the provided ${language} code",
-    "language": "${language}",
-    "context": {
-      "file_path": "${filePath}",
-      "selected_code": "${selectedCode}",
-      "surrounding_context": "${surroundingCode}",
-      "documentation_type": "${documentationType}",
-      "target_audience": "${targetAudience}",
-      "include_examples": "${includeExamples}"
-    },
-    "instructions": "Generate ${documentationType} documentation for the following ${language} code, targeting ${targetAudience} audience.\n\n**Code to document:**\n```${language}\n${selectedCode}\n```\n\n**File:** ${filePath}\n**Context:**\n```${language}\n${surroundingCode}\n```\n\n**Documentation Requirements:**\n${documentationRequirements}\n\n**Language-Specific Documentation Standards:**\n${languageDocStandards}\n\n**Generate documentation including:**\n1. **Overview**: Brief description of purpose and functionality\n2. **Parameters/Arguments**: Detailed parameter descriptions with types\n3. **Return Values**: Description of return types and possible values\n4. **Usage Examples**: ${includeExamples}\n5. **Error Handling**: Possible exceptions and error conditions\n6. **Dependencies**: Required imports or dependencies\n7. **Notes**: Additional implementation details or warnings\n8. **See Also**: Related functions or documentation links\n\n**Format the documentation according to ${language} conventions:**\n${documentationFormat}",
-    "output_format": {
-      "structure": "formatted_documentation",
-      "include_code_examples": true,
-      "include_parameter_types": true,
-      "include_return_types": true,
-      "include_usage_examples": true,
-      "follow_language_conventions": true
-    },
+    "instructions": "Generate ${documentationType} documentation for this ${language} code (target: ${targetAudience}).\n\n```${language}\n${selectedCode}\n```\n\nInclude:\n1. Overview and purpose\n2. Parameters/arguments with types\n3. Return values\n4. Usage examples\n5. Error handling\n\nUse ${language} documentation conventions (JSDoc, docstrings, etc.).",
     "variables": [
       "language",
-      "filePath",
       "selectedCode",
-      "surroundingCode",
       "documentationType",
-      "targetAudience",
-      "includeExamples",
-      "documentationRequirements",
-      "languageDocStandards",
-      "documentationFormat"
+      "targetAudience"
     ]
   },
   "config": {
-    "configurable_fields": [
-      "documentation_type",
-      "target_audience",
-      "include_examples",
-      "detail_level",
-      "include_type_annotations",
-      "include_performance_notes",
-      "max_examples"
-    ],
     "default_values": {
       "documentation_type": "api",
-      "target_audience": "developers",
-      "include_examples": true,
-      "detail_level": "comprehensive",
-      "include_type_annotations": true,
-      "include_performance_notes": false,
-      "max_examples": 3
-    },
-    "validation_rules": {
-      "documentation_type": {
-        "type": "string",
-        "enum": ["api", "inline", "readme", "tutorial", "reference"]
-      },
-      "target_audience": {
-        "type": "string",
-        "enum": ["developers", "end_users", "maintainers", "beginners"]
-      },
-      "detail_level": {
-        "type": "string",
-        "enum": ["basic", "comprehensive", "detailed"]
-      },
-      "max_examples": {
-        "type": "number",
-        "min": 1,
-        "max": 10
-      }
+      "target_audience": "developers"
     }
-  },
-  "language_doc_standards": {
-    "javascript": "JSDoc format with @param, @returns, @example tags",
-    "typescript": "TSDoc format with type annotations and interface documentation",
-    "python": "Google/NumPy docstring format with type hints",
-    "java": "Javadoc format with @param, @return, @throws tags",
-    "csharp": "XML documentation comments with <summary>, <param>, <returns> tags",
-    "go": "Go doc format with package and function comments",
-    "rust": "Rust doc format with /// comments and examples"
-  },
-  "documentation_formats": {
-    "javascript": "/**\n * Description\n * @param {type} name - description\n * @returns {type} description\n * @example\n * // usage example\n */",
-    "python": "\"\"\"\nDescription\n\nArgs:\n    param (type): description\n\nReturns:\n    type: description\n\nExample:\n    >>> example usage\n\"\"\"",
-    "java": "/**\n * Description\n * @param name description\n * @return description\n * @throws Exception description\n */",
-    "csharp": "/// <summary>\n/// Description\n/// </summary>\n/// <param name=\"name\">description</param>\n/// <returns>description</returns>"
-  },
-  "metadata": {
-    "supported_languages": ["javascript", "typescript", "python", "java", "csharp", "go", "rust", "php", "ruby", "swift", "kotlin"],
-    "required_context": ["selectedCode", "language", "documentationType"],
-    "optional_context": ["targetAudience", "includeExamples", "surroundingCode"],
-    "performance_notes": "Optimized for documenting functions, classes, and modules up to 1000 lines"
   }
 }

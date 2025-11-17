@@ -1,144 +1,21 @@
 {
   "id": "code-review",
   "name": "Enhanced Code Review",
-  "description": "Comprehensive code review with configurable focus areas, severity levels, and experience-level adaptation",
-  "category": "code_review",
-  "version": "2.0.0",
-  "author": "DebugBuddy Team",
-  "created_date": "2024-01-01",
-  "last_modified": "2024-01-15",
-  "schema_version": "1.0.0",
   "template": {
-    "task": "Perform a comprehensive code review tailored to ${experienceLevel} developers",
-    "language": "${language}",
-    "context": {
-      "file_path": "${filePath}",
-      "selected_code": "${selectedCode}",
-      "surrounding_context": "${surroundingCode}",
-      "project_type": "${projectType}",
-      "experience_level": "${experienceLevel}",
-      "focus_areas": "${focusAreas}",
-      "severity_threshold": "${severityThreshold}"
-    },
-    "instructions": "You are conducting a code review for a ${experienceLevel} developer. Focus specifically on: ${focusAreas}.\n\nLanguage-specific considerations for ${language}:\n${languageSpecificCriteria}\n\nCode to review:\n```${language}\n${selectedCode}\n```\n\nFile: ${filePath}\nContext:\n```${language}\n${surroundingCode}\n```\n\nProvide feedback with severity levels (critical, high, medium, low). Only include issues at ${severityThreshold} severity and above. For ${experienceLevel} developers:\n- ${experienceLevelGuidance}\n\nFormat each finding as:\n**[SEVERITY]** Line X: Issue description\n- Explanation: Why this is an issue\n- Fix: Specific solution\n- Example: Code example if helpful",
-    "output_format": {
-      "structure": "categorized_findings",
-      "include_line_numbers": true,
-      "include_severity": true,
-      "include_explanation": true,
-      "include_fix_suggestion": true,
-      "include_code_examples": true,
-      "group_by_category": true
-    },
+    "instructions": "Review this ${language} code for: ${focusAreas}.\n\n```${language}\n${selectedCode}\n```\n\nFor each issue:\n**[SEVERITY]** Line X: Description\n- Why it matters\n- How to fix\n- Code example\n\nApply ${language}-specific best practices. Only report ${severityThreshold}+ severity issues. Tailor for ${experienceLevel} developers.",
     "variables": [
       "language",
-      "filePath",
-      "selectedCode", 
-      "surroundingCode",
-      "projectType",
-      "experienceLevel",
+      "selectedCode",
       "focusAreas",
       "severityThreshold",
-      "languageSpecificCriteria",
-      "experienceLevelGuidance"
+      "experienceLevel"
     ]
   },
   "config": {
-    "configurable_fields": [
-      "max_suggestions",
-      "focus_areas", 
-      "severity_threshold",
-      "experience_level",
-      "include_style_suggestions",
-      "include_performance_tips",
-      "include_security_checks",
-      "language_specific_rules"
-    ],
     "default_values": {
-      "max_suggestions": 10,
-      "focus_areas": ["bugs", "security", "performance", "maintainability"],
+      "focus_areas": "bugs, security, performance, maintainability",
       "severity_threshold": "medium",
-      "experience_level": "intermediate",
-      "include_style_suggestions": true,
-      "include_performance_tips": true,
-      "include_security_checks": true,
-      "language_specific_rules": true
-    },
-    "validation_rules": {
-      "max_suggestions": {
-        "type": "number",
-        "min": 1,
-        "max": 25
-      },
-      "focus_areas": {
-        "type": "array",
-        "items": {
-          "enum": ["bugs", "security", "performance", "maintainability", "style", "documentation", "testing", "architecture"]
-        }
-      },
-      "severity_threshold": {
-        "type": "string",
-        "enum": ["low", "medium", "high", "critical"]
-      },
-      "experience_level": {
-        "type": "string", 
-        "enum": ["beginner", "intermediate", "advanced"]
-      }
+      "experience_level": "intermediate"
     }
-  },
-  "language_specific_criteria": {
-    "javascript": [
-      "Check for proper async/await usage",
-      "Validate event listener cleanup",
-      "Review closure usage and memory leaks",
-      "Check for proper error handling in promises"
-    ],
-    "typescript": [
-      "Verify type safety and proper typing",
-      "Check for any usage and type assertions",
-      "Review interface vs type usage",
-      "Validate generic constraints"
-    ],
-    "python": [
-      "Check PEP 8 compliance",
-      "Review exception handling patterns",
-      "Validate list comprehensions vs loops",
-      "Check for proper context manager usage"
-    ],
-    "java": [
-      "Review exception handling hierarchy",
-      "Check for proper resource management",
-      "Validate thread safety considerations",
-      "Review design pattern implementations"
-    ],
-    "csharp": [
-      "Check for proper disposal patterns",
-      "Review LINQ usage efficiency",
-      "Validate async/await patterns",
-      "Check for proper exception handling"
-    ],
-    "go": [
-      "Review error handling patterns",
-      "Check for goroutine leaks",
-      "Validate channel usage",
-      "Review interface implementations"
-    ],
-    "rust": [
-      "Check ownership and borrowing patterns",
-      "Review error handling with Result types",
-      "Validate lifetime annotations",
-      "Check for unsafe code usage"
-    ]
-  },
-  "experience_level_guidance": {
-    "beginner": "Provide detailed explanations with learning resources. Focus on fundamental concepts and common pitfalls. Include step-by-step solutions.",
-    "intermediate": "Balance explanation depth with practical advice. Reference best practices and design patterns. Provide alternative approaches.",
-    "advanced": "Focus on architectural concerns, performance implications, and edge cases. Reference advanced patterns and trade-offs."
-  },
-  "metadata": {
-    "supported_languages": ["javascript", "typescript", "python", "java", "csharp", "go", "rust", "php", "ruby", "swift", "kotlin"],
-    "required_context": ["selectedCode", "language", "experienceLevel"],
-    "optional_context": ["focusAreas", "severityThreshold", "projectType"],
-    "performance_notes": "Optimized for code selections up to 1000 lines. Language-specific rules are cached for performance."
   }
 }
