@@ -3,16 +3,6 @@ import { getModel } from "./getmodel";
 import { PromptManager } from "../prompt/PromptManager";
 import { UserAction, CodeContext } from "../prompt/types";
 
-export const modelFileReview = async (data: object): Promise<ProviderResponse> => {
-    const res = await getTool.provider(String(getModel()), data);
-
-    return res;
-};
-
-/**
- * Enhanced file review using the JSON prompt system
- * Provides structured code review with configurable focus areas
- */
 export const modelFileReviewWithPrompt = async (
     codeContext: CodeContext
 ): Promise<ProviderResponse> => {

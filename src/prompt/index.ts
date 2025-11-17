@@ -3,10 +3,8 @@
  * Provides structured prompt processing and management
  */
 
-// Export everything from templates for backward compatibility
 export * from './templates';
 
-// Export core system components
 export { PromptSystem } from './PromptSystem';
 export { PromptRegistry } from './PromptRegistry';
 export { PromptLoader } from './PromptLoader';
@@ -24,9 +22,7 @@ export { PromptCache } from './PromptCache';
 export { LazyPromptLoader } from './LazyPromptLoader';
 export { MemoryMonitor } from './MemoryMonitor';
 
-// Export types and interfaces
 export * from './types';
 export * from './interfaces';
 
-// Convenience exports
 export { promptRegistry } from './templates';

@@ -155,5 +155,4 @@ class ConfigurationChangeHandler implements ConfigChangeHandler {
   }
 }
 
-// Export singleton instance
 export const configChangeHandler = new ConfigurationChangeHandler();

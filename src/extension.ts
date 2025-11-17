@@ -18,7 +18,6 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	console.log('Congratulations, your extension "DebugBuddy" is now active!');
 
-	// Initialize API key cache manager
 	// Cache uses lazy initialization; accessing it will trigger initialization. Avoid eager setup to reduce startup impact.
 	try {
 		// Test cache initialization by checking if it's accessible
@@ -29,7 +28,6 @@ export async function activate(context: vscode.ExtensionContext) {
 		console.log('DebugBuddy: Extension will continue with degraded caching functionality');
 	}
 
-	// Initialize and register configuration change listener
 	try {
 		configChangeHandler.initialize();
 		console.log('DebugBuddy: Configuration change listener registered successfully');
@@ -38,7 +36,6 @@ export async function activate(context: vscode.ExtensionContext) {
 		console.log('DebugBuddy: Extension will continue without automatic cache updates');
 	}
 
-	// Initialize webview manager
 	try {
 		webviewManager.initialize(context);
 		console.log('DebugBuddy: Webview manager initialized successfully');
@@ -47,7 +44,6 @@ export async function activate(context: vscode.ExtensionContext) {
 		console.log('DebugBuddy: Extension will continue with terminal display fallback');
 	}
 
-	// Initialize configuration manager and migrate settings if needed
 	try {
 		const configManager = ConfigurationManager.getInstance();
 		await configManager.migrateConfiguration();
@@ -57,7 +53,6 @@ export async function activate(context: vscode.ExtensionContext) {
 		console.log('DebugBuddy: Extension will continue with default configuration');
 	}
 
-	// Initialize prompt manager and load JSON prompts
 	try {
 		const promptManager = PromptManager.getInstance();
 		await promptManager.initialize();
@@ -219,7 +214,6 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 export function deactivate() {
-	// Clear the API key cache to remove sensitive data from memory
 	try {
 		apiKeyCache.clear();
 		console.log('DebugBuddy: API key cache cleared during deactivation');
@@ -227,7 +221,6 @@ export function deactivate() {
 		console.error('DebugBuddy: Error clearing API key cache during deactivation:', error);
 	}
 
-	// Dispose of configuration change handler
 	try {
 		configChangeHandler.dispose();
 		console.log('DebugBuddy: Configuration change handler disposed during deactivation');
@@ -235,7 +228,6 @@ export function deactivate() {
 		console.error('DebugBuddy: Error disposing configuration change handler during deactivation:', error);
 	}
 
-	// Dispose of webview manager
 	try {
 		webviewManager.dispose();
 		console.log('DebugBuddy: Webview manager disposed during deactivation');
@@ -243,7 +235,6 @@ export function deactivate() {
 		console.error('DebugBuddy: Error disposing webview manager during deactivation:', error);
 	}
 
-	// Dispose of configuration manager
 	try {
 		const configManager = ConfigurationManager.getInstance();
 		configManager.dispose();

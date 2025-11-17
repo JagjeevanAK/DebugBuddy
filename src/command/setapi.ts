@@ -1,6 +1,4 @@
 import * as vscode from 'vscode';
-import { getApiKey } from '../lib/getapi';
-import { getModel } from '../lib/getmodel';
 
 export const setApiKey = vscode.commands.registerCommand('DebugBuddy.setApiKey', async () => {
 

@@ -1,8 +1,7 @@
 import { errorDetails } from "../extractors";
 import { vscode } from "../helper/vscode";
-import { modelHoverRes, modelHoverResWithPrompt } from "../lib/hoverResponse";
-import { PromptManager } from "../prompt/PromptManager";
-import { UserAction, CodeContext } from "../prompt/types";
+import { modelHoverResWithPrompt } from "../lib/hoverResponse";
+import { CodeContext } from "../prompt/types";
 import explanationCache from "./store";
 
 type Param  = {
@@ -43,12 +42,9 @@ export const getModelResponse = async (
                 diagnostics: [diagnostic]
             };
 
-            // Use the enhanced hover response with prompt system
             const response = await modelHoverResWithPrompt(codeContext);
             
-            // Cache the response
-            // @ts-ignore
-            const responseText = response.text || response.content || String(response);
+            const responseText = response.text || String(response);
             explanationCache.set(key, responseText);
             return responseText;
         }

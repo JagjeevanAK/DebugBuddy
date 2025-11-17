@@ -3,16 +3,6 @@ import { getModel } from "./getmodel";
 import { PromptManager } from "../prompt/PromptManager";
 import { UserAction, CodeContext } from "../prompt/types";
 
-export const modelHoverRes = async (data: object): Promise<ProviderResponse> => {
-    const res = await getTool.provider(String(getModel()), data);
-    
-    return res;
-};
-
-/**
- * Enhanced hover response using the JSON prompt system
- * Provides structured debug analysis for error diagnostics
- */
 export const modelHoverResWithPrompt = async (
     codeContext: CodeContext
 ): Promise<ProviderResponse> => {

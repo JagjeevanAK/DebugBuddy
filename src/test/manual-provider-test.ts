@@ -47,8 +47,6 @@ const testProcessedPrompt: ProcessedPrompt = {
     variables_used: ['language', 'code', 'filePath']
 };
 
-// Legacy prompt removed - using JSON prompts only
-
 const testStringPrompt = 'Simple string prompt for testing';
 
 function testPromptStructure() {
@@ -61,8 +59,6 @@ function testPromptStructure() {
     console.log('- Context keys:', Object.keys(content.context));
     console.log('- Output format structure:', content.output_format.structure);
     console.log('- Variables used:', testProcessedPrompt.variables_used);
-    
-    // Legacy prompt structure test removed - JSON prompts only
     
     console.log('\nString prompt test:');
     console.log('- Type:', typeof testStringPrompt);
@@ -77,8 +73,6 @@ function testPromptSerialization() {
     console.log('- Serialized length:', serializedProcessed.length);
     console.log('- Contains task:', serializedProcessed.includes('code_review'));
     console.log('- Contains instructions:', serializedProcessed.includes('Review the following'));
-    
-    // Legacy prompt serialization removed - JSON prompts only
     
     const parsed = JSON.parse(serializedProcessed);
     console.log('- Deserialization successful:', parsed.content.task === 'code_review');
@@ -113,7 +107,6 @@ function testPromptProcessing() {
                 } else {
                     promptText = JSON.stringify(content, null, 2);
                 }
-            // Legacy prompt handling removed - JSON prompts only
             } else {
                 promptText = JSON.stringify(prompt);
             }
@@ -131,9 +124,6 @@ function testPromptProcessing() {
     console.log('- Contains context:', processedText.includes('Context:'));
     console.log('- Contains output format:', processedText.includes('Output Format:'));
     console.log('- Final length:', processedText.length);
-    
-    // Legacy prompt processing removed - JSON prompts only
-    // Legacy text processing removed - JSON prompts only
     
     console.log('\nString prompt processing:');
     const stringText = processPrompt(testStringPrompt);
