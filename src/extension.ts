@@ -3,6 +3,7 @@ import {
 	deleteKey,
 	setApiKey,
 	showApiKey,
+	changeModel,
 	reviewCode,
 	performanceAnalysis,
 	refactorSuggestions,
@@ -66,6 +67,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		analyzeWithDebugBuddy,
 		setApiKey,
 		showApiKey,
+		changeModel,
 		configChangeHandler,
 		vscode.commands.registerCommand("DebugBuddy.showWebview", () => {
 			webviewManager.toggleWebview();

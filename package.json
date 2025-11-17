@@ -3,7 +3,7 @@
   "displayName": "Debug Buddy",
   "description": "Debug Buddy is your AI mentor — it helps you understand and resolve errors by offering thoughtful suggestions, encouraging you to think instead of instantly solving everything for you.",
   "publisher": "JagjeevanKashid",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -48,6 +48,10 @@
       {
         "command": "DebugBuddy.deleteKey",
         "title": "Delete API Key of DebugBuddy"
+      },
+      {
+        "command": "DebugBuddy.changeModel",
+        "title": "Change Model/Provider for DebugBuddy"
       },
       {
         "command": "DebugBuddy.reviewCurrentFile",

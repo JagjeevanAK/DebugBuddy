@@ -1,6 +1,7 @@
 export * from './deletekey';
 export * from './setapi';
 export * from './showapi';
+export * from './changeModel';
 export * from './reviewCode';
 export * from './performanceAnalysis';
 export * from './refactorSuggestions';

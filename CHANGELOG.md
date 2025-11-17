@@ -4,6 +4,19 @@ All notable changes to the "DebugBuddy" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.6.0] - 2025-11-17
+
+### Added
+
+- New "Change Model/Provider" command to switch AI providers and models without re-entering API key
+- Added ability to change between Anthropic, Gemini, Groq, OpenAI, OpenRouter, and Xai providers while keeping existing API key
+- Provider-specific model name suggestions for easier configuration
+
+### Improved
+
+- Enhanced user experience for model management with streamlined workflow
+- Added validation to ensure API key exists before allowing model changes
+
 ## [0.5.0] - 2025-11-17
 
 ### Fixed
