@@ -175,7 +175,6 @@ suite('PromptManager Basic Integration Tests', () => {
         const stats = promptManager.getStats();
 
         assert.ok(stats.initialized);
-        assert.ok(stats.promptSystem);
         assert.ok(stats.errorStats);
         assert.ok(stats.recoveryCapabilities);
     });

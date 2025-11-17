@@ -47,9 +47,9 @@ suite('PromptManager Integration Tests', () => {
             assert.strictEqual(promptManager.isInitialized(), true);
             assert.strictEqual(promptSystem.isInitialized(), true);
             
-            const stats = promptManager.getStats();
+            const stats = manager.getStats();
+            assert.ok(stats);
             assert.ok(stats.initialized);
-            assert.ok(stats.promptSystem);
         });
 
         test('should handle initialization failures gracefully', async () => {
@@ -404,12 +404,8 @@ suite('PromptManager Integration Tests', () => {
             const stats = promptManager.getStats();
 
             assert.ok(stats.initialized);
-            assert.ok(stats.promptSystem);
             assert.ok(stats.errorStats);
             assert.ok(stats.recoveryCapabilities);
-
-            assert.ok(typeof stats.promptSystem.totalPrompts === 'number');
-            assert.ok(typeof stats.promptSystem.promptsByCategory === 'object');
         });
 
         test('should track available prompt types', async () => {

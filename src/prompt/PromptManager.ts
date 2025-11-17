@@ -327,36 +327,21 @@ export class PromptManager implements IPromptManager {
         return Array.from(prompts.keys());
     }
 
-    /**
-     * Get the prompt system instance (for testing purposes)
-     */
     public getPromptSystem(): PromptSystem {
         return this.promptSystem;
     }
 
-    /**
-     * Get system statistics including performance metrics
-     */
     public getStats() {
         return {
             initialized: this.initialized,
-            promptSystem: this.promptSystem.getStats(),
             templateEngine: this.templateEngine.getPerformanceMetrics(),
             errorStats: promptErrorHandler.getErrorStats(),
             recoveryCapabilities: promptErrorHandler.validateRecoveryCapabilities()
         };
     }
 
-    /**
-     * Optimize system performance
-     */
     public optimizePerformance(): void {
-        // Optimize template engine caches
         this.templateEngine.optimizeCaches();
-        
-        // Optimize prompt registry
-        const registry = this.promptSystem.getRegistry();
-        registry.optimizeMemory();
         
         promptErrorHandler.logError(
             PromptError.CONFIGURATION_ERROR,
@@ -364,10 +349,6 @@ export class PromptManager implements IPromptManager {
             { stats: this.getStats() }
         );
     }
-
-    /**
-     * Setup error handling callbacks and monitoring
-     */
     private setupErrorHandling(): void {
         promptErrorHandler.onError((error, message, context) => {
             // Log to VS Code output channel if available

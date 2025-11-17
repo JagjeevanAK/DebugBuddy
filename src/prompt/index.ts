@@ -1,9 +1,6 @@
 /**
  * Main entry point for the JSON prompt system
- * Provides structured prompt processing and management
  */
-
-export * from './templates';
 
 export { PromptSystem } from './PromptSystem';
 export { PromptRegistry } from './PromptRegistry';
@@ -16,13 +13,6 @@ export { ErrorHandler, promptErrorHandler, withErrorHandling, withAsyncErrorHand
 export { PromptManager } from './PromptManager';
 export { ConfigurationManager } from './ConfigurationManager';
 export { ValidationUtils } from './ValidationUtils';
-export { PromptHotReloader } from './PromptHotReloader';
-export { TemplateComposition } from './TemplateComposition';
-export { PromptCache } from './PromptCache';
-export { LazyPromptLoader } from './LazyPromptLoader';
-export { MemoryMonitor } from './MemoryMonitor';
 
 export * from './types';
 export * from './interfaces';
-
-export { promptRegistry } from './templates';

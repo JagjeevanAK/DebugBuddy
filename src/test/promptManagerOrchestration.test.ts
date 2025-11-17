@@ -266,12 +266,8 @@ suite('PromptManager Orchestration Integration Tests', () => {
             const stats = promptManager.getStats();
 
             assert.ok(stats.initialized, 'Should report initialization status');
-            assert.ok(stats.promptSystem, 'Should include prompt system stats');
             assert.ok(stats.errorStats, 'Should include error statistics');
             assert.ok(stats.recoveryCapabilities, 'Should include recovery capabilities');
-
-            assert.ok(typeof stats.promptSystem.totalPrompts === 'number', 'Should have total prompts count');
-            assert.ok(typeof stats.promptSystem.promptsByCategory === 'object', 'Should have prompts by category');
         });
 
         test('should perform comprehensive health check', async () => {

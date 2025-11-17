@@ -1,13 +1,10 @@
 /**
  * PromptSystem - Main entry point for the JSON prompt system
- * Provides initialization and coordination of all prompt system components
  */
 
 import { PromptRegistry } from './PromptRegistry';
 import { PromptLoader } from './PromptLoader';
-import { PromptHotReloader } from './PromptHotReloader';
 import { ValidationUtils } from './ValidationUtils';
-import { TemplateComposition } from './TemplateComposition';
 import { JsonPrompt, PromptCategory } from './types';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -16,9 +13,7 @@ export class PromptSystem {
     private static instance: PromptSystem;
     private registry: PromptRegistry;
     private loader: PromptLoader;
-    private hotReloader: PromptHotReloader;
     private validationUtils: ValidationUtils;
-    private templateComposition: TemplateComposition;
     private initialized: boolean = false;
     private customDirectories: string[] = [];
 
@@ -26,8 +21,6 @@ export class PromptSystem {
         this.registry = new PromptRegistry();
         this.loader = new PromptLoader();
         this.validationUtils = new ValidationUtils();
-        this.templateComposition = new TemplateComposition();
-        this.hotReloader = new PromptHotReloader();
     }
 
     /**
@@ -155,57 +148,16 @@ export class PromptSystem {
         
         for (const [directory, prompts] of customPrompts) {
             for (const prompt of prompts) {
-                // Apply template composition if needed
-                const composedPrompt = await this.templateComposition.composePrompt(prompt);
-                
-                // Register the prompt
-                this.registry.registerPrompt(composedPrompt.id, composedPrompt);
-                this.registry.registerPrompt(composedPrompt.name, composedPrompt);
-                
-                // Register as base template for inheritance
-                this.templateComposition.registerBaseTemplate(composedPrompt);
+                this.registry.registerPrompt(prompt.id, prompt);
+                this.registry.registerPrompt(prompt.name, prompt);
             }
         }
     }
 
-    /**
-     * Enable hot reloading for custom directories
-     */
-    public enableHotReload(directories: string[] = this.customDirectories): void {
-        this.hotReloader.enable(directories, true);
-    }
-
-    /**
-     * Disable hot reloading
-     */
-    public disableHotReload(): void {
-        this.hotReloader.disable();
-    }
-
-    /**
-     * Get validation utilities
-     */
     public getValidationUtils(): ValidationUtils {
         return this.validationUtils;
     }
 
-    /**
-     * Get template composition engine
-     */
-    public getTemplateComposition(): TemplateComposition {
-        return this.templateComposition;
-    }
-
-    /**
-     * Get hot reloader
-     */
-    public getHotReloader(): PromptHotReloader {
-        return this.hotReloader;
-    }
-
-    /**
-     * Validate all loaded prompts
-     */
     public async validateAllPrompts(): Promise<any> {
         const directories = [
             path.join(__dirname, 'templates'),
@@ -215,12 +167,8 @@ export class PromptSystem {
         return await this.validationUtils.validateDirectories(directories);
     }
 
-    /**
-     * Reload prompts from all sources
-     */
     public async reloadAllPrompts(): Promise<void> {
         this.registry.clear();
-        this.templateComposition.clearCache();
         
         await this.loadBuiltInPrompts();
         
@@ -229,18 +177,12 @@ export class PromptSystem {
         }
     }
 
-    /**
-     * Add custom directory
-     */
     public addCustomDirectory(directory: string): void {
         if (!this.customDirectories.includes(directory)) {
             this.customDirectories.push(directory);
         }
     }
 
-    /**
-     * Remove custom directory
-     */
     public removeCustomDirectory(directory: string): void {
         const index = this.customDirectories.indexOf(directory);
         if (index > -1) {
@@ -248,15 +190,10 @@ export class PromptSystem {
         }
     }
 
-    /**
-     * Get system statistics
-     */
     public getStats() {
         return {
             initialized: this.initialized,
             customDirectories: this.customDirectories.length,
-            hotReload: this.hotReloader.getStatus(),
-            composition: this.templateComposition.getStats(),
             ...this.registry.getStats()
         };
     }

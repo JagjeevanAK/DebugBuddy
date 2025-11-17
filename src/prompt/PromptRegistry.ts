@@ -1,47 +1,17 @@
 /**
  * PromptRegistry - Central registry for managing JSON prompt templates
- * Enhanced with performance optimizations and caching
  */
 
 import { IPromptRegistry } from './interfaces';
 import { JsonPrompt, PromptCategory } from './types';
-import { PromptCache } from './PromptCache';
-import { LazyPromptLoader } from './LazyPromptLoader';
-import { PromptHotReloader } from './PromptHotReloader';
-import { MemoryMonitor } from './MemoryMonitor';
 
 export class PromptRegistry implements IPromptRegistry {
     private prompts: Map<string, JsonPrompt> = new Map();
     private promptsByCategory: Map<PromptCategory, JsonPrompt[]> = new Map();
-    private cache: PromptCache;
-    private lazyLoader: LazyPromptLoader;
-    private hotReloader: PromptHotReloader;
-    private memoryMonitor: MemoryMonitor;
 
     constructor() {
-        // Initialize category maps
         Object.values(PromptCategory).forEach(category => {
             this.promptsByCategory.set(category, []);
-        });
-
-        // Initialize performance components
-        this.cache = new PromptCache();
-        this.lazyLoader = new LazyPromptLoader(this.cache);
-        this.hotReloader = new PromptHotReloader(this.cache);
-        this.memoryMonitor = MemoryMonitor.getInstance();
-
-        // Register with memory monitor
-        this.memoryMonitor.registerComponent('PromptRegistry', () => this.optimizeMemory());
-
-        // Set up hot reloader callbacks
-        this.hotReloader.onFileChange((event, prompt) => {
-            if (prompt) {
-                this.registerPrompt(prompt.id, prompt);
-            } else if (event.type === 'deleted') {
-                // Try to unregister by filename
-                const fileName = require('path').basename(event.filePath, '.json');
-                this.unregisterPrompt(fileName);
-            }
         });
     }
 
@@ -73,24 +43,8 @@ export class PromptRegistry implements IPromptRegistry {
         this.promptsByCategory.set(prompt.category, categoryPrompts);
     }
 
-    /**
-     * Retrieve a prompt by name or id (with lazy loading support)
-     */
-    async getPrompt(name: string): Promise<JsonPrompt | null> {
-        const inMemory = this.prompts.get(name);
-        if (inMemory) {
-            return inMemory;
-        }
-
-        // Try lazy loading
-        const lazyLoaded = await this.lazyLoader.getPrompt(name);
-        if (lazyLoaded) {
-            // Register the lazy-loaded prompt
-            this.registerPrompt(name, lazyLoaded);
-            return lazyLoaded;
-        }
-
-        return null;
+    async getPrompt(key: string): Promise<JsonPrompt | null> {
+        return this.prompts.get(key) || null;
     }
 
     /**
@@ -196,91 +150,11 @@ export class PromptRegistry implements IPromptRegistry {
         return Array.from(names);
     }
 
-    /**
-     * Get all prompt ids
-     */
     getPromptIds(): string[] {
         const ids = new Set<string>();
         this.prompts.forEach((prompt) => {
             ids.add(prompt.id);
         });
         return Array.from(ids);
-    }
-
-    /**
-     * Enable hot reloading for custom directories
-     */
-    enableHotReload(directories: string[]): void {
-        this.hotReloader.enable(directories, true);
-    }
-
-    /**
-     * Disable hot reloading
-     */
-    disableHotReload(): void {
-        this.hotReloader.disable();
-    }
-
-    /**
-     * Initialize lazy loading for directories
-     */
-    async initializeLazyLoading(directories: string[]): Promise<void> {
-        await this.lazyLoader.initialize(directories);
-        
-        // Preload frequently used prompts
-        await this.lazyLoader.preloadFrequentlyUsed();
-        
-        // Update memory monitor
-        this.memoryMonitor.updateComponentUsage('PromptRegistry', this.cache.getMemoryUsageMB());
-    }
-
-    /**
-     * Get performance statistics
-     */
-    getPerformanceStats(): {
-        cacheStats: any;
-        lazyLoaderStats: any;
-        hotReloaderStatus: any;
-        memoryUsage: number;
-    } {
-        return {
-            cacheStats: this.cache.getStats(),
-            lazyLoaderStats: this.lazyLoader.getStats(),
-            hotReloaderStatus: this.hotReloader.getStatus(),
-            memoryUsage: this.cache.getMemoryUsageMB()
-        };
-    }
-
-    /**
-     * Optimize memory usage
-     */
-    optimizeMemory(): void {
-        this.cache.optimize();
-        this.lazyLoader.optimizeMemory();
-        
-        // Update memory monitor
-        this.memoryMonitor.updateComponentUsage('PromptRegistry', this.cache.getMemoryUsageMB());
-    }
-
-    /**
-     * Preload specific prompts
-     */
-    async preloadPrompts(promptIds: string[]): Promise<void> {
-        await this.lazyLoader.preloadPrompts(promptIds);
-    }
-
-    /**
-     * Get cache health metrics
-     */
-    getCacheHealth(): any {
-        return this.cache.getHealthMetrics();
-    }
-
-    /**
-     * Clear all caches and reset
-     */
-    clearCaches(): void {
-        this.cache.clear();
-        this.lazyLoader.clear();
     }
 }
