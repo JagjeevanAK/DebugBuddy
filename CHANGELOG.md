@@ -4,6 +4,24 @@ All notable changes to the "DebugBuddy" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.4.0] - 2025-11-17
+
+### Added
+
+- Performance Analysis command: Identify bottlenecks and optimization opportunities in your code
+- Security Analysis command: Detect vulnerabilities and security issues
+- Refactoring Suggestions command: Get AI-powered recommendations to improve code maintainability and structure
+- Analyze with Options command: Quick pick menu to choose between different analysis types (Code Review, Performance, Refactoring, Security)
+- Enhanced file analysis utility with support for multiple analysis types
+
+### Improved
+
+- Refactored model provider architecture with base provider class for better code organization
+- Improved prompt registry system for better prompt management
+- Enhanced test coverage with updated test files
+- Code organization: Consolidated helper functions into utils directory
+- Webview manager improvements for better response rendering
+
 ## [0.3.0] - 2025-01-15
 
 ### Added
