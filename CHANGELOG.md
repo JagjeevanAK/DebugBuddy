@@ -4,6 +4,20 @@ All notable changes to the "DebugBuddy" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.4.1] - 2025-11-17
+
+### Improved
+
+- Streamlined all system prompt templates for better AI output quality
+  - Reduced prompt size by 85-90% by removing excessive metadata and verbosity
+  - Focused prompts on actionable instructions and essential context
+  - Improved response quality by eliminating redundant formatting instructions
+  - All 6 prompt templates (code-review, refactoring, security, performance, debug, documentation) optimized
+
+### Changed
+
+- Simplified JSON prompt structure for maintainability
+
 ## [0.4.0] - 2025-11-17
 
 ### Added
