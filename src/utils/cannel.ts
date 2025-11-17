@@ -1,3 +1,3 @@
-import { vscode } from "./vscode";
+import * as vscode from 'vscode';
 
 export const DebugBuddyOutputChannel = vscode.window.createOutputChannel("DebugBuddy");

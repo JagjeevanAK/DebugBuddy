@@ -1,7 +1,6 @@
+import * as vscode from 'vscode';
 import { DebugBuddyOutputChannel } from "./cannel";
 import { webviewManager } from "../webview/WebviewManager";
-
-import { vscode } from "./vscode";
 
 export const displayReview = (reviewResponse: any, fileName: any, skipWebview: boolean = false) => {
     const config = vscode.workspace.getConfiguration('DebugBuddy');

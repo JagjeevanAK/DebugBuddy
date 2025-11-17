@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
-import { analyzeFile } from '../helper/fileAnalysis';
+import { analyzeFile } from '../utils/fileAnalysis';
 import { UserAction } from '../prompt/types';
-import { reviewFile } from '../helper/fileReview';
+import { reviewFile } from '../utils/fileAnalysis';
 
 export const analyzeWithDebugBuddy = vscode.commands.registerCommand('DebugBuddy.analyzeWithOptions', async () => {
     const activeEditor = vscode.window.activeTextEditor;

@@ -1,379 +1,248 @@
 import * as vscode from 'vscode';
-import { WebviewProvider, IWebviewProvider } from './WebviewProvider';
-import { ThemeManager } from './ThemeManager';
-import { WebviewErrorLogger } from './WebviewErrorLogger';
+import { MarkdownRenderer } from './MarkdownRenderer';
 
-export interface WebviewContent {
+interface WebviewContent {
     fileName: string;
     timestamp: string;
     content: string;
-    language?: string;
 }
 
-export interface WebviewState {
-    isActive: boolean;
-    panel?: vscode.WebviewPanel;
-    lastContent?: WebviewContent;
-    contentHistory: WebviewContent[];
-}
-
-export interface IWebviewManager {
-    initialize(context: vscode.ExtensionContext): void;
-    displayResponse(content: string, fileName: string): void;
-    isWebviewActive(): boolean;
-    toggleWebview(): void;
-    updateContent(content: string, fileName: string, language?: string): void;
-    clearContent(): void;
-    getContentHistory(): WebviewContent[];
-    refreshWebview(): void;
-    refreshTheme(): void;
-    dispose(): void;
-    displayResponseWithFallback(content: string, fileName: string): void;
-    getErrorStats(): any;
-}
-
-export class WebviewManager implements IWebviewManager {
-    private webviewProvider: IWebviewProvider | undefined;
-    private context: vscode.ExtensionContext | undefined;
-    private state: WebviewState;
+export class WebviewManager {
+    private panel?: vscode.WebviewPanel;
+    private context?: vscode.ExtensionContext;
+    private contentHistory: WebviewContent[] = [];
     private readonly maxHistorySize = 10;
-    private errorLogger: WebviewErrorLogger;
-    private fallbackEnabled: boolean = true;
-    private hasShownFallbackNotification: boolean = false;
+    private renderer: MarkdownRenderer;
 
     constructor() {
-        this.state = {
-            isActive: false,
-            contentHistory: []
-        };
-        this.errorLogger = WebviewErrorLogger.getInstance();
+        this.renderer = new MarkdownRenderer();
     }
 
     public initialize(context: vscode.ExtensionContext): void {
+        this.context = context;
+    }
+
+    public displayResponseWithFallback(content: string, fileName: string): void {
+        if (!content?.trim()) {
+            this.fallbackToTerminal('No content available', fileName);
+            return;
+        }
+
         try {
-            this.context = context;
-            this.webviewProvider = new WebviewProvider(context);
-            this.state.isActive = true;
-            
-            // Set up bidirectional relationship
-            this.webviewProvider.setWebviewManager(this);
-            
-            // Set up webview provider event handlers for state management
-            this.setupWebviewProviderHandlers();
+            this.displayResponse(content, fileName);
         } catch (error) {
-            this.errorLogger.logError('initialize', error as Error, false, { context: 'WebviewManager initialization' });
-            this.state.isActive = false;
-            throw error;
+            console.error('Webview display failed:', error);
+            this.fallbackToTerminal(content, fileName);
         }
     }
 
     public displayResponse(content: string, fileName: string): void {
-        if (!this.webviewProvider) {
-            throw new Error('WebviewManager not initialized. Call initialize() first.');
+        const timestamp = new Date().toLocaleString();
+        
+        this.addToHistory({ fileName, timestamp, content });
+        
+        if (!this.panel) {
+            this.createPanel();
         }
 
-        try {
-            this.updateContent(content, fileName);
-            this.webviewProvider.show();
-        } catch (error) {
-            this.errorLogger.logError('displayResponse', error as Error, false, { fileName, contentLength: content.length });
-            throw error;
-        }
-    }
-
-    public displayResponseWithFallback(content: string, fileName: string): void {
-        // Validate input content
-        if (!content || content.trim().length === 0) {
-            this.errorLogger.logError('displayResponseWithFallback', new Error('Empty or invalid content provided'), true, { fileName });
-            this.fallbackToTerminal(content || 'No content available', fileName);
-            return;
-        }
-
-        if (!this.fallbackEnabled) {
-            this.errorLogger.logError('displayResponseWithFallback', new Error('Fallback is disabled'), true, { fileName });
-            this.fallbackToTerminal(content, fileName);
-            return;
-        }
-
-        // Try webview display first with comprehensive error detection
-        try {
-            // Pre-flight checks
-            if (!this.isWebviewActive()) {
-                throw new Error('Webview is not active');
-            }
-            
-            if (!this.webviewProvider) {
-                throw new Error('WebviewProvider is not initialized');
-            }
-
-            if (!this.context) {
-                throw new Error('Extension context is not available');
-            }
-
-            // Attempt to display in webview
-            this.displayResponse(content, fileName);
-            
-            // Success - no need to log as this is the expected behavior
-
-        } catch (error) {
-            // Determine if this is a critical error that should disable webview temporarily
-            const isCriticalError = this.isCriticalWebviewError(error as Error);
-            
-            if (isCriticalError) {
-                this.temporarilyDisableWebview();
-            }
-
-            // Log error and use fallback
-            this.errorLogger.logError('displayResponseWithFallback', error as Error, true, { 
-                fileName, 
-                contentLength: content.length,
-                webviewActive: this.isWebviewActive(),
-                contextAvailable: !!this.context,
-                providerAvailable: !!this.webviewProvider,
-                isCriticalError,
-                errorType: (error as Error).constructor.name,
-                errorMessage: (error as Error).message
-            });
-            
-            this.fallbackToTerminal(content, fileName);
+        const html = this.generateHtml(content, fileName, timestamp);
+        if (this.panel) {
+            this.panel.webview.html = html;
+            this.panel.reveal(vscode.ViewColumn.Beside);
         }
     }
 
-    public updateContent(content: string, fileName: string, language?: string): void {
-        if (!this.webviewProvider) {
-            throw new Error('WebviewManager not initialized. Call initialize() first.');
+    private createPanel(): void {
+        if (!this.context) {
+            throw new Error('WebviewManager not initialized');
         }
 
-        try {
-            const webviewContent: WebviewContent = {
-                fileName,
-                timestamp: new Date().toISOString(),
-                content,
-                language
-            };
+        this.panel = vscode.window.createWebviewPanel(
+            'debugBuddyResponse',
+            'DebugBuddy',
+            vscode.ViewColumn.Beside,
+            {
+                enableScripts: false,
+                retainContextWhenHidden: true
+            }
+        );
 
-            // Update state with new content
-            this.state.lastContent = webviewContent;
-            this.addToHistory(webviewContent);
-
-            // Update webview provider
-            this.webviewProvider.updateContent(content, fileName);
-        } catch (error) {
-            this.errorLogger.logError('updateContent', error as Error, false, { 
-                fileName, 
-                contentLength: content.length,
-                language 
-            });
-            throw error;
-        }
+        this.panel.onDidDispose(() => {
+            this.panel = undefined;
+        });
     }
 
-    public isWebviewActive(): boolean {
-        return this.state.isActive && this.webviewProvider !== undefined;
+    private generateHtml(content: string, fileName: string, timestamp: string): string {
+        const theme = vscode.window.activeColorTheme;
+        const isDark = theme.kind === vscode.ColorThemeKind.Dark;
+        
+        const renderedContent = this.renderer.renderMarkdown(content);
+
+        return `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: var(--vscode-font-family);
+            font-size: var(--vscode-font-size);
+            color: var(--vscode-foreground);
+            background-color: var(--vscode-editor-background);
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .header {
+            border-bottom: 1px solid var(--vscode-panel-border);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            margin: 0 0 10px 0;
+            font-size: 1.5em;
+            color: var(--vscode-titleBar-activeForeground);
+        }
+        .file-info {
+            color: var(--vscode-descriptionForeground);
+            font-size: 0.9em;
+        }
+        .filename {
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        .content {
+            max-width: 900px;
+        }
+        pre {
+            background-color: ${isDark ? '#0d1117' : '#f6f8fa'};
+            border: 1px solid var(--vscode-panel-border);
+            border-radius: 6px;
+            padding: 16px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: var(--vscode-editor-font-family);
+            font-size: 0.9em;
+            background-color: ${isDark ? '#161b22' : '#f0f0f0'};
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        h2, h3, h4 {
+            color: var(--vscode-titleBar-activeForeground);
+            margin-top: 24px;
+            margin-bottom: 12px;
+        }
+        ul, ol {
+            padding-left: 30px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        a {
+            color: var(--vscode-textLink-foreground);
+        }
+        a:hover {
+            color: var(--vscode-textLink-activeForeground);
+        }
+        blockquote {
+            border-left: 4px solid var(--vscode-textBlockQuote-border);
+            padding-left: 16px;
+            margin-left: 0;
+            color: var(--vscode-textBlockQuote-foreground);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>DebugBuddy Analysis</h1>
+        <div class="file-info">
+            <span class="filename">${this.escapeHtml(fileName)}</span>
+            <span class="timestamp">${this.escapeHtml(timestamp)}</span>
+        </div>
+    </div>
+    <div class="content">
+        ${renderedContent}
+    </div>
+</body>
+</html>`;
+    }
+
+    private escapeHtml(text: string): string {
+        return text
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    private fallbackToTerminal(content: string, fileName: string): void {
+        const { DebugBuddyOutputChannel } = require('../utils/cannel');
+        
+        DebugBuddyOutputChannel.clear();
+        DebugBuddyOutputChannel.appendLine(`\n${'='.repeat(80)}`);
+        DebugBuddyOutputChannel.appendLine(`DebugBuddy Analysis - ${fileName}`);
+        DebugBuddyOutputChannel.appendLine(`${new Date().toLocaleString()}`);
+        DebugBuddyOutputChannel.appendLine('='.repeat(80));
+        DebugBuddyOutputChannel.appendLine('');
+        DebugBuddyOutputChannel.appendLine(content);
+        DebugBuddyOutputChannel.appendLine('');
+        DebugBuddyOutputChannel.show(true);
+    }
+
+    private addToHistory(content: WebviewContent): void {
+        this.contentHistory.unshift(content);
+        if (this.contentHistory.length > this.maxHistorySize) {
+            this.contentHistory = this.contentHistory.slice(0, this.maxHistorySize);
+        }
     }
 
     public toggleWebview(): void {
-        if (!this.webviewProvider) {
-            throw new Error('WebviewManager not initialized. Call initialize() first.');
+        if (this.panel) {
+            this.panel.reveal(vscode.ViewColumn.Beside);
+        } else {
+            vscode.window.showInformationMessage('No content to display yet');
         }
+    }
 
-        try {
-            if (this.state.panel) {
-                // If webview exists, show it
-                this.webviewProvider.show();
-            } else {
-                this.webviewProvider.show();
-                if (this.state.lastContent) {
-                    this.webviewProvider.updateContent(
-                        this.state.lastContent.content, 
-                        this.state.lastContent.fileName
-                    );
-                }
-            }
-        } catch (error) {
-            this.errorLogger.logError('toggleWebview', error as Error, false, { 
-                panelExists: !!this.state.panel,
-                hasLastContent: !!this.state.lastContent
-            });
-            throw error;
+    public refreshWebview(): void {
+        const lastContent = this.contentHistory[0];
+        if (lastContent) {
+            this.displayResponse(lastContent.content, lastContent.fileName);
         }
     }
 
     public clearContent(): void {
-        if (!this.webviewProvider) {
-            return;
+        if (this.panel) {
+            this.panel.webview.html = this.generateHtml('Content cleared', '', new Date().toLocaleString());
         }
-
-        // Clear current content
-        this.webviewProvider.updateContent('', 'No file selected');
-        
-        // Reset state
-        this.state.lastContent = undefined;
     }
 
     public getContentHistory(): WebviewContent[] {
-        return [...this.state.contentHistory];
+        return [...this.contentHistory];
     }
 
-    public refreshWebview(): void {
-        if (!this.webviewProvider || !this.state.lastContent) {
-            return;
-        }
-
-        // Refresh with last content
-        this.webviewProvider.updateContent(
-            this.state.lastContent.content,
-            this.state.lastContent.fileName
-        );
-    }
-
-    public refreshTheme(): void {
-        // Force a theme refresh by updating content
-        this.refreshWebview();
-    }
-
-    public dispose(): void {
-        if (this.webviewProvider) {
-            this.webviewProvider.dispose();
-        }
-        
-        // Reset state
-        this.state = {
-            isActive: false,
-            contentHistory: []
-        };
+    public isWebviewActive(): boolean {
+        return this.panel !== undefined;
     }
 
     public getErrorStats(): any {
-        return this.errorLogger.getErrorStats();
+        return {
+            totalErrors: 0,
+            fallbackUsageCount: 0,
+            healthStatus: 'healthy'
+        };
     }
 
-    private fallbackToTerminal(content: string, fileName: string): void {
-        try {
-            // Log fallback usage
-            console.warn('DebugBuddy: Using terminal fallback for content display');
-            
-            // Direct terminal display without calling displayReview to avoid circular dependency
-            const { DebugBuddyOutputChannel } = require('../helper/cannel');
-            
-            DebugBuddyOutputChannel.clear();
-            DebugBuddyOutputChannel.appendLine('DebugBuddy Code Review\n');
-            DebugBuddyOutputChannel.appendLine(`File: ${fileName}`);
-            DebugBuddyOutputChannel.appendLine(`Analyzed: ${new Date().toLocaleString()}\n`);
-            DebugBuddyOutputChannel.appendLine('---\n');
-            DebugBuddyOutputChannel.appendLine(content);
-            DebugBuddyOutputChannel.appendLine('\n---');
-            DebugBuddyOutputChannel.appendLine('\nNote: Displayed in terminal due to webview issues. Check error log for details.');
-            DebugBuddyOutputChannel.show(true);
-            
-            // Show user notification about fallback (only once per session)
-            if (!this.hasShownFallbackNotification) {
-                this.hasShownFallbackNotification = true;
-                vscode.window.showWarningMessage(
-                    'DebugBuddy: Using terminal display due to webview issues. Check the error log for details.',
-                    'Show Error Log',
-                    'Don\'t Show Again'
-                ).then(selection => {
-                    if (selection === 'Show Error Log') {
-                        this.errorLogger.showErrorLog();
-                    } else if (selection === 'Don\'t Show Again') {
-                        this.hasShownFallbackNotification = true;
-                    }
-                });
-            }
-            
-        } catch (terminalError) {
-            // If even terminal display fails, log it but don't throw
-            this.errorLogger.logError('fallbackToTerminal', terminalError as Error, false, { 
-                fileName,
-                originalContent: content.substring(0, 100) + '...' // Log first 100 chars
-            });
-            
-            // Show a critical error message to user
-            vscode.window.showErrorMessage(
-                'DebugBuddy: Failed to display response in both webview and terminal. Check the output panel for details.',
-                'Show Error Log',
-                'Reset Extension'
-            ).then(selection => {
-                if (selection === 'Show Error Log') {
-                    this.errorLogger.showErrorLog();
-                } else if (selection === 'Reset Extension') {
-                    this.resetWebviewSystem();
-                }
-            });
+    public dispose(): void {
+        if (this.panel) {
+            this.panel.dispose();
+            this.panel = undefined;
         }
-    }
-
-    private isCriticalWebviewError(error: Error): boolean {
-        const criticalErrorPatterns = [
-            'Extension context is invalid',
-            'VS Code returned undefined',
-            'Webview object is not available',
-            'Failed to create webview panel',
-            'Extension host connection lost'
-        ];
-        
-        return criticalErrorPatterns.some(pattern => 
-            error.message.toLowerCase().includes(pattern.toLowerCase())
-        );
-    }
-
-    private temporarilyDisableWebview(): void {
-        console.warn('DebugBuddy: Temporarily disabling webview due to critical error');
-        this.fallbackEnabled = false;
-        
-        // Re-enable after 30 seconds
-        setTimeout(() => {
-            this.fallbackEnabled = true;
-            console.log('DebugBuddy: Webview re-enabled after temporary disable');
-        }, 30000);
-    }
-
-    private resetWebviewSystem(): void {
-        try {
-            // Dispose current webview system
-            this.dispose();
-            
-            // Reset state
-            this.fallbackEnabled = true;
-            this.hasShownFallbackNotification = false;
-            
-            // Reinitialize if context is available
-            if (this.context) {
-                this.initialize(this.context);
-            }
-            
-            vscode.window.showInformationMessage('DebugBuddy: Webview system has been reset');
-        } catch (resetError) {
-            this.errorLogger.logError('resetWebviewSystem', resetError as Error, false, {});
-            vscode.window.showErrorMessage('DebugBuddy: Failed to reset webview system');
-        }
-    }
-
-    private setupWebviewProviderHandlers(): void {
-        // This method sets up event handlers to keep state in sync
-        // The actual panel reference will be managed by the provider
-        // but we track the state here for coordination
-    }
-
-    private addToHistory(content: WebviewContent): void {
-        this.state.contentHistory.unshift(content);
-        
-        // Limit history size
-        if (this.state.contentHistory.length > this.maxHistorySize) {
-            this.state.contentHistory = this.state.contentHistory.slice(0, this.maxHistorySize);
-        }
-    }
-
-    // Method to get webview panel reference for advanced operations
-    public getWebviewPanel(): vscode.WebviewPanel | undefined {
-        return this.state.panel;
-    }
-
-    // Method to set panel reference (called by WebviewProvider)
-    public setWebviewPanel(panel: vscode.WebviewPanel | undefined): void {
-        this.state.panel = panel;
-        this.state.isActive = panel !== undefined;
     }
 }
 

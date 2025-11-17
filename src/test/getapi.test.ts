@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
-import { getApiKey } from '../lib/getapi';
+import { getApiKey } from '../lib/config';
 import { apiKeyCache } from '../lib/apiKeyCache';
 
 suite('getApiKey Function Tests', () => {

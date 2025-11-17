@@ -1,7 +1,6 @@
 import { generateText } from "ai";
-import { createOpenAI } from '@ai-sdk/openai';
-import { getApiKey } from "../lib/getapi";
-import { getCustomModel } from "../lib/getmodel";
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
+import { getApiKey, getCustomModel } from "../lib/config";
 import { ProcessedPrompt, PromptMetadata } from "../prompt/types";
 
 interface ProviderResponse {
@@ -10,7 +9,7 @@ interface ProviderResponse {
     promptType?: string;
 }
 
-export const openaiTool = async (prompt: object | ProcessedPrompt | string): Promise<ProviderResponse> => {
+export const geminiTool = async (prompt: object | ProcessedPrompt | string): Promise<ProviderResponse> => {
     let promptText: string;
     let metadata: PromptMetadata | undefined;
     let promptType: string | undefined;
@@ -51,22 +50,21 @@ export const openaiTool = async (prompt: object | ProcessedPrompt | string): Pro
     try {
         const apiKey = getApiKey();
         if (!apiKey) {
-            throw new Error('OpenAI API key not configured. Please set your API key using the "Set API Key" command.');
+            throw new Error('Gemini API key not configured. Please set your API key using the "Set API Key" command.');
         }
 
         const customModel = getCustomModel();
         if (!customModel) {
-            throw new Error('Custom model not specified. Please configure a model name for OpenAI.');
+            throw new Error('Custom model not specified. Please configure a model name for Gemini.');
         }
 
-        const openai = createOpenAI({
-            apiKey: String(apiKey),
-            compatibility: 'strict',
+        const google = createGoogleGenerativeAI({
+            apiKey: String(apiKey)
         });
 
         const res = await generateText({
-            model: openai(customModel as any),
-            prompt: promptText
+            model: google(customModel as any),
+            prompt: promptText,
         });
         
         return {
@@ -75,7 +73,7 @@ export const openaiTool = async (prompt: object | ProcessedPrompt | string): Pro
             promptType
         };
     } catch (error) {
-        console.error('OpenAI API error:', error);
+        console.error('Gemini API error:', error);
         throw error;
     }
 };

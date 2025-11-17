@@ -5,8 +5,8 @@
 
 import { IContextAnalyzer } from './interfaces';
 import { UserAction, CodeContext, PromptContext, PromptCategory } from './types';
-import { getLanguageFromExtension, getLanguageFromVSCode } from '../helper/getlang';
-import { vscode } from '../helper/vscode';
+import { getLanguageFromExtension, getLanguageFromVSCode } from '../utils/getlang';
+import * as vscode from 'vscode';
 
 export class ContextAnalyzer implements IContextAnalyzer {
     private readonly actionToPromptMapping: Map<UserAction, string> = new Map([

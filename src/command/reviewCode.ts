@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { reviewFile } from '../helper/fileReview';
+import { reviewFile } from '../utils/fileAnalysis';
 
 export const reviewCode = vscode.commands.registerCommand('DebugBuddy.reviewCurrentFile', async () => {
     const activeEditor = vscode.window.activeTextEditor;

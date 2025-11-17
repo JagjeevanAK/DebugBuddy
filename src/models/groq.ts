@@ -1,7 +1,6 @@
 import { generateText } from "ai";
 import { createGroq } from '@ai-sdk/groq';
-import { getApiKey } from "../lib/getapi";
-import { getCustomModel } from "../lib/getmodel";
+import { getApiKey, getCustomModel } from "../lib/config";
 import { ProcessedPrompt, PromptMetadata } from "../prompt/types";
 
 interface ProviderResponse {

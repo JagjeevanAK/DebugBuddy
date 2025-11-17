@@ -87,7 +87,7 @@ suite('Prompt System Integration', () => {
 
             // Should throw error if specific prompt type is not available
             await assert.rejects(
-                async () => await promptManager.processRequest(UserAction.GENERATE_TESTS, codeContext),
+                async () => await promptManager.processRequest(UserAction.CODE_REVIEW, codeContext),
                 /No JSON prompt available/
             );
         });

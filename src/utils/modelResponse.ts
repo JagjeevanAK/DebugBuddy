@@ -1,6 +1,6 @@
-import { errorDetails } from "../extractors";
-import { vscode } from "../helper/vscode";
-import { modelHoverResWithPrompt } from "../lib/hoverResponse";
+import * as vscode from 'vscode';
+import { errorDetails } from ".";
+import { modelHoverResWithPrompt } from "../lib/aiService";
 import { CodeContext } from "../prompt/types";
 import explanationCache from "./store";
 

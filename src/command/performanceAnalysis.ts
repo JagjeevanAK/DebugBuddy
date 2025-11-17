@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { analyzeFile } from '../helper/fileAnalysis';
+import { analyzeFile } from '../utils/fileAnalysis';
 import { UserAction } from '../prompt/types';
 
 export const performanceAnalysis = vscode.commands.registerCommand('DebugBuddy.analyzePerformance', async () => {

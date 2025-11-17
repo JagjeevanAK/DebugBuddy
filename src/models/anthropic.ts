@@ -1,7 +1,6 @@
 import { generateText } from "ai";
-import { createXai } from '@ai-sdk/xai';
-import { getApiKey } from "../lib/getapi";
-import { getCustomModel } from "../lib/getmodel";
+import { createAnthropic } from '@ai-sdk/anthropic';
+import { getApiKey, getCustomModel } from "../lib/config";
 import { ProcessedPrompt, PromptMetadata } from "../prompt/types";
 
 interface ProviderResponse {
@@ -10,7 +9,7 @@ interface ProviderResponse {
     promptType?: string;
 }
 
-export const xaiTool = async (prompt: object | ProcessedPrompt | string): Promise<ProviderResponse> => {
+export const anthropicTool = async (prompt: object | ProcessedPrompt | string): Promise<ProviderResponse> => {
     let promptText: string;
     let metadata: PromptMetadata | undefined;
     let promptType: string | undefined;
@@ -51,20 +50,20 @@ export const xaiTool = async (prompt: object | ProcessedPrompt | string): Promis
     try {
         const apiKey = getApiKey();
         if (!apiKey) {
-            throw new Error('XAI API key not configured. Please set your API key using the "Set API Key" command.');
+            throw new Error('Anthropic API key not configured. Please set your API key using the "Set API Key" command.');
         }
 
         const customModel = getCustomModel();
         if (!customModel) {
-            throw new Error('Custom model not specified. Please configure a model name for Xai.');
+            throw new Error('Custom model not specified. Please configure a model name for Anthropic.');
         }
 
-        const xai = createXai({
-            apiKey: String(apiKey),
+        const anthropic = createAnthropic({
+            apiKey: String(apiKey)
         });
 
         const res = await generateText({
-            model: xai(customModel as any),
+            model: anthropic(customModel as any),
             prompt: promptText
         });
         
@@ -74,7 +73,7 @@ export const xaiTool = async (prompt: object | ProcessedPrompt | string): Promis
             promptType
         };
     } catch (error) {
-        console.error('XAI API error:', error);
+        console.error('Anthropic API error:', error);
         throw error;
     }
 };

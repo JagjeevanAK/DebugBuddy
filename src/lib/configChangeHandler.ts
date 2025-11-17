@@ -5,7 +5,7 @@
  * specifically monitoring API key changes and updating the cache accordingly.
  */
 
-import { vscode } from "../helper/vscode";
+import * as vscode from 'vscode';
 import { apiKeyCache } from "./apiKeyCache";
 import { ConfigurationManager } from "../prompt/ConfigurationManager";
 

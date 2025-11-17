@@ -1,5 +1,5 @@
-import { getModelResponse } from "../helper/modelResponse";
-import { vscode } from "../helper/vscode";
+import * as vscode from 'vscode';
+import { getModelResponse } from "./modelResponse";
 
 export const OnErrorHover = vscode.languages.registerHoverProvider('*', {
     async provideHover(document, position) {

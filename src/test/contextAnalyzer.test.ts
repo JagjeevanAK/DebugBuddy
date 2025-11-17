@@ -73,7 +73,7 @@ suite('ContextAnalyzer Test Suite', () => {
                 language: 'typescript'
             };
 
-            const result = analyzer.analyzeContext(UserAction.GENERATE_TESTS, context);
+            const result = analyzer.analyzeContext(UserAction.CODE_REVIEW, context);
 
             assert.strictEqual(result.fileType, 'test');
         });

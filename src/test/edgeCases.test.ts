@@ -11,7 +11,7 @@
 
 import * as assert from 'assert';
 import * as vscode from 'vscode';
-import { getApiKey } from '../lib/getapi';
+import { getApiKey } from '../lib/config';
 import { apiKeyCache } from '../lib/apiKeyCache';
 import { configChangeHandler } from '../lib/configChangeHandler';
 import { activate, deactivate } from '../extension';

@@ -11,7 +11,7 @@ import { OptimizedTemplateEngine } from './OptimizedTemplateEngine';
 import { ConfigurationManager } from './ConfigurationManager';
 import { PromptValidator } from './PromptValidator';
 import { promptErrorHandler, withAsyncErrorHandling } from './ErrorHandler';
-import { vscode } from '../helper/vscode';
+import * as vscode from 'vscode';
 
 export class PromptManager implements IPromptManager {
     private static instance: PromptManager;

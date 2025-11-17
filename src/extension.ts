@@ -1,4 +1,4 @@
-import { vscode } from "./helper/vscode";
+import * as vscode from 'vscode';
 import {
 	deleteKey,
 	setApiKey,
@@ -11,7 +11,7 @@ import {
 } from "./command";
 import {
 	OnErrorHover
-} from "./extractors";
+} from "./utils";
 import { apiKeyCache } from "./lib/apiKeyCache";
 import { configChangeHandler } from "./lib/configChangeHandler";
 import { webviewManager } from "./webview/WebviewManager";
@@ -131,9 +131,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			});
 		}),
 		vscode.commands.registerCommand("DebugBuddy.showErrorLog", () => {
-			const { WebviewErrorLogger } = require('./webview/WebviewErrorLogger');
-			const errorLogger = WebviewErrorLogger.getInstance();
-			errorLogger.showErrorLog();
+			vscode.window.showInformationMessage('Error logging has been simplified. Check the Output panel for DebugBuddy logs.');
 		}),
 		vscode.commands.registerCommand("DebugBuddy.showPromptConfiguration", () => {
 			const configManager = ConfigurationManager.getInstance();

@@ -1,7 +1,6 @@
 import { generateText } from "ai";
-import { createAnthropic } from '@ai-sdk/anthropic';
-import { getApiKey } from "../lib/getapi";
-import { getCustomModel } from "../lib/getmodel";
+import { createOpenAI } from '@ai-sdk/openai';
+import { getApiKey, getCustomModel } from "../lib/config";
 import { ProcessedPrompt, PromptMetadata } from "../prompt/types";
 
 interface ProviderResponse {
@@ -10,7 +9,7 @@ interface ProviderResponse {
     promptType?: string;
 }
 
-export const anthropicTool = async (prompt: object | ProcessedPrompt | string): Promise<ProviderResponse> => {
+export const openrouterTool = async (prompt: object | ProcessedPrompt | string): Promise<ProviderResponse> => {
     let promptText: string;
     let metadata: PromptMetadata | undefined;
     let promptType: string | undefined;
@@ -51,20 +50,21 @@ export const anthropicTool = async (prompt: object | ProcessedPrompt | string): 
     try {
         const apiKey = getApiKey();
         if (!apiKey) {
-            throw new Error('Anthropic API key not configured. Please set your API key using the "Set API Key" command.');
+            throw new Error('OpenRouter API key not configured. Please set your API key using the "Set API Key" command.');
         }
 
         const customModel = getCustomModel();
         if (!customModel) {
-            throw new Error('Custom model not specified. Please configure a model name for Anthropic.');
+            throw new Error('Custom model not specified. Please configure a model name for OpenRouter.');
         }
 
-        const anthropic = createAnthropic({
-            apiKey: String(apiKey)
+        const openrouter = createOpenAI({
+            apiKey: String(apiKey),
+            baseURL: 'https://openrouter.ai/api/v1',
         });
 
         const res = await generateText({
-            model: anthropic(customModel as any),
+            model: openrouter(customModel as any),
             prompt: promptText
         });
         
@@ -74,7 +74,7 @@ export const anthropicTool = async (prompt: object | ProcessedPrompt | string): 
             promptType
         };
     } catch (error) {
-        console.error('Anthropic API error:', error);
+        console.error('OpenRouter API error:', error);
         throw error;
     }
 };

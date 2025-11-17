@@ -1,6 +1,6 @@
-import { getContextCode } from "../helper/codeContext";
-import { getErrorLine } from "../helper/errorLine";
-import { vscode } from "../helper/vscode";
+import * as vscode from 'vscode';
+import { getContextCode } from "./codeContext";
+import { getErrorLine } from "./errorLine";
 
 type Param = {
     diagnostic: vscode.Diagnostic
