@@ -4,12 +4,7 @@ import { groqTool } from "./groq";
 import { openaiTool } from "./openai";
 import { openrouterTool } from "./openrouter";
 import { xaiTool } from "./xai";
-
-interface ProviderResponse {
-    text: string;
-    metadata?: any;
-    promptType?: string;
-}
+import { ProviderResponse } from "./baseProvider";
 
 export const getTool = {
     provider: (providerName: string, prompt: any): Promise<ProviderResponse> => {
