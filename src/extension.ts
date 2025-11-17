@@ -3,7 +3,11 @@ import {
 	deleteKey,
 	setApiKey,
 	showApiKey,
-	reviewCode
+	reviewCode,
+	performanceAnalysis,
+	refactorSuggestions,
+	securityAnalysis,
+	analyzeWithDebugBuddy
 } from "./command";
 import {
 	OnErrorHover
@@ -66,6 +70,10 @@ export async function activate(context: vscode.ExtensionContext) {
 		deleteKey,
 		OnErrorHover,
 		reviewCode,
+		performanceAnalysis,
+		refactorSuggestions,
+		securityAnalysis,
+		analyzeWithDebugBuddy,
 		setApiKey,
 		showApiKey,
 		configChangeHandler,

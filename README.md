@@ -8,9 +8,19 @@ DebugBuddy is your AI mentor — it helps you understand and resolve errors by o
 
 Hover over any error or warning in your code to get instant AI-powered explanations and suggestions. No need to search for solutions - DebugBuddy provides context-aware help right where you need it.
 
-### **AI-Powered Code Review**
+### **AI-Powered Code Analysis**
 
-Get comprehensive code analysis for entire files. Right-click on any file or use the command palette to review your code for potential issues, best practices, and improvement suggestions.
+Get comprehensive code analysis with multiple specialized features:
+
+- **Code Review** - Comprehensive analysis for best practices and potential issues
+- **Performance Analysis** - Identify bottlenecks and optimization opportunities
+- **Refactoring Suggestions** - Improve code maintainability and structure
+- **Security Analysis** - Find vulnerabilities and security issues
+
+Access all features through:
+- Right-click context menu → "Analyze Code with DebugBuddy..."
+- Command Palette → Individual analysis commands
+- Context menu → Direct access to each analysis type
 
 ### Multi-Provider AI Support
 
@@ -44,9 +54,22 @@ Choose your preferred AI provider and model based on your needs:
 ### Review Your Code
 
 1. Open any code file
-2. Right-click in editor: "Review Current File with DebugBuddy"
-   OR press `Cmd+Shift+P` and select "Review Current File with DebugBuddy"
-3. View the comprehensive analysis in the webview panel
+2. Right-click in editor: "Analyze Code with DebugBuddy..."
+3. Choose your analysis type:
+   - **Code Review** - Best practices and code quality
+   - **Performance Analysis** - Speed and efficiency improvements
+   - **Refactoring Suggestions** - Code structure improvements
+   - **Security Analysis** - Vulnerability detection
+4. View the comprehensive analysis in the webview panel
+
+### Quick Access Commands
+
+All features available via Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`):
+- "Analyze Code with DebugBuddy..." - Choose analysis type
+- "Review Current File with DebugBuddy" - Code review
+- "Analyze Performance with DebugBuddy" - Performance analysis
+- "Suggest Refactoring with DebugBuddy" - Refactoring suggestions
+- "Analyze Security with DebugBuddy" - Security audit
 
 ### Manage API Keys
 

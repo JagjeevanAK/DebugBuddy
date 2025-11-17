@@ -1,17 +1,15 @@
-import { modelFileReviewWithPrompt } from "../lib/modelFileReview";
 import { DebugBuddyOutputChannel } from "./cannel";
 import { getLanguageFromExtension, getLanguageFromVSCode } from "./getlang";
 import { displayReview } from "./terminalDisplay";
 import { vscode } from "./vscode";
-import { CodeContext } from "../prompt/types";
+import { PromptManager } from "../prompt/PromptManager";
+import { UserAction, CodeContext } from "../prompt/types";
+import { getTool } from "../tools";
+import { getModel } from "../lib/getmodel";
 
 type TextEditor = typeof vscode.window.activeTextEditor;
 
-/**
- * Enhanced file review function that uses the new JSON prompt system
- * for comprehensive code analysis and review
- */
-export const reviewFile = async (editor: TextEditor) => {
+export const analyzeFile = async (editor: TextEditor, action: UserAction) => {
     if (!editor) {
         vscode.window.showErrorMessage('DebugBuddy: No active editor found.');
         return;
@@ -22,12 +20,10 @@ export const reviewFile = async (editor: TextEditor) => {
 
     let fileLanguage = getLanguageFromExtension(fileName);
 
-    // If extension-based detection fails, use VS Code's language detection
     if (fileLanguage === 'plaintext') {
         fileLanguage = getLanguageFromVSCode(editor);
     }
 
-    // Special handling for files without extensions but with recognizable names
     const baseName = fileName.split('/').pop()?.toLowerCase() || '';
     if (fileLanguage === 'plaintext') {
         if (baseName === 'dockerfile') {
@@ -45,15 +41,22 @@ export const reviewFile = async (editor: TextEditor) => {
         }
     }
 
+    const actionTitles: Record<UserAction, string> = {
+        [UserAction.CODE_REVIEW]: 'reviewing',
+        [UserAction.DEBUG_ERROR]: 'debugging',
+        [UserAction.REFACTOR]: 'analyzing for refactoring',
+        [UserAction.GENERATE_DOCS]: 'generating documentation',
+        [UserAction.SECURITY_ANALYSIS]: 'analyzing security',
+        [UserAction.PERFORMANCE_ANALYSIS]: 'analyzing performance',
+        [UserAction.EXPLAIN_CODE]: 'explaining'
+    };
+
     vscode.window.withProgress({
         location: vscode.ProgressLocation.Notification,
-        title: `DebugBuddy is reviewing your ${fileLanguage} code...`,
+        title: `DebugBuddy is ${actionTitles[action]} your ${fileLanguage} code...`,
         cancellable: false
     }, async () => {
         try {
-            let response;
-            
-            // Use the enhanced file review with new prompt system
             const codeContext: CodeContext = {
                 selectedText: code,
                 fullText: code,
@@ -61,25 +64,24 @@ export const reviewFile = async (editor: TextEditor) => {
                 language: fileLanguage
             };
 
-            // Use the enhanced function with JSON prompt system
-            response = await modelFileReviewWithPrompt(codeContext);
+            const promptManager = PromptManager.getInstance();
+            const processedPrompt = await promptManager.processRequest(action, codeContext);
+
+            const response = await getTool.provider(String(getModel()), processedPrompt.content);
             
-            // Display the review results
             try {
                 displayReview(response, fileName);
             } catch (displayError) {
-                console.error('DebugBuddy: Error displaying review, using terminal display:', displayError);
-                // Use terminal display as alternative
+                console.error('DebugBuddy: Error displaying analysis, using terminal display:', displayError);
                 displayReview(response, fileName);
             }
 
         } catch (error) {
-            console.error('Code review error:', error);
+            console.error('Analysis error:', error);
             
-            // For errors, always use terminal display to ensure visibility
-            DebugBuddyOutputChannel.appendLine(`Failed to get code review for ${fileLanguage} file: ${error}`);
+            DebugBuddyOutputChannel.appendLine(`Failed to analyze ${fileLanguage} file: ${error}`);
             DebugBuddyOutputChannel.show(true);
-            vscode.window.showErrorMessage('DebugBuddy: Failed to get code review. Check your connection and API key.');
+            vscode.window.showErrorMessage('DebugBuddy: Failed to analyze code. Check your connection and API key.');
         }
     });
 };

@@ -2,3 +2,7 @@ export * from './deletekey';
 export * from './setapi';
 export * from './showapi';
 export * from './reviewCode';
+export * from './performanceAnalysis';
+export * from './refactorSuggestions';
+export * from './securityAnalysis';
+export * from './analyzeWithOptions';

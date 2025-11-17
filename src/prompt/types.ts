@@ -9,7 +9,6 @@ export enum PromptCategory {
     DOCUMENTATION = 'documentation',
     SECURITY_ANALYSIS = 'security_analysis',
     PERFORMANCE_ANALYSIS = 'performance_analysis',
-    TEST_GENERATION = 'test_generation',
     CODE_EXPLANATION = 'code_explanation',
     GENERAL = 'general'
 }
@@ -21,7 +20,6 @@ export enum UserAction {
     GENERATE_DOCS = 'generate_docs',
     SECURITY_ANALYSIS = 'security_analysis',
     PERFORMANCE_ANALYSIS = 'performance_analysis',
-    GENERATE_TESTS = 'generate_tests',
     EXPLAIN_CODE = 'explain_code'
 }
 

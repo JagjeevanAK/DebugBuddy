@@ -25,7 +25,6 @@
         "documentation",
         "security_analysis",
         "performance_analysis",
-        "test_generation",
         "code_explanation",
         "general"
       ]

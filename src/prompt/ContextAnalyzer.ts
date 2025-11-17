@@ -16,7 +16,6 @@ export class ContextAnalyzer implements IContextAnalyzer {
         [UserAction.GENERATE_DOCS, 'documentation'],
         [UserAction.SECURITY_ANALYSIS, 'security-analysis'],
         [UserAction.PERFORMANCE_ANALYSIS, 'performance-analysis'],
-        [UserAction.GENERATE_TESTS, 'test-generation'],
         [UserAction.EXPLAIN_CODE, 'code-explanation']
     ]);
 

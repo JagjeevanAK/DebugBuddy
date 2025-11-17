@@ -5,7 +5,6 @@
 import { JsonPrompt, PromptTemplate, PromptConfig, ValidationResult, PromptError } from './types';
 import { PromptValidator } from './PromptValidator';
 import { promptErrorHandler, withAsyncErrorHandling } from './ErrorHandler';
-import * as path from 'path';
 
 export interface InheritanceConfig {
     extends?: string;

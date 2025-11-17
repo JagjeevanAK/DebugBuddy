@@ -54,6 +54,22 @@
         "title": "Review Current File with DebugBuddy"
       },
       {
+        "command": "DebugBuddy.analyzeWithOptions",
+        "title": "Analyze Code with DebugBuddy..."
+      },
+      {
+        "command": "DebugBuddy.analyzePerformance",
+        "title": "Analyze Performance with DebugBuddy"
+      },
+      {
+        "command": "DebugBuddy.suggestRefactoring",
+        "title": "Suggest Refactoring with DebugBuddy"
+      },
+      {
+        "command": "DebugBuddy.analyzeSecurity",
+        "title": "Analyze Security with DebugBuddy"
+      },
+      {
         "command": "DebugBuddy.showWebview",
         "title": "Show DebugBuddy Webview"
       },
@@ -98,8 +114,28 @@
       "editor/context": [
         {
           "when": "editorTextFocus",
+          "command": "DebugBuddy.analyzeWithOptions",
+          "group": "debugbuddy@1"
+        },
+        {
+          "when": "editorTextFocus",
           "command": "DebugBuddy.reviewCurrentFile",
-          "group": "navigation"
+          "group": "debugbuddy@2"
+        },
+        {
+          "when": "editorTextFocus",
+          "command": "DebugBuddy.analyzePerformance",
+          "group": "debugbuddy@3"
+        },
+        {
+          "when": "editorTextFocus",
+          "command": "DebugBuddy.suggestRefactoring",
+          "group": "debugbuddy@4"
+        },
+        {
+          "when": "editorTextFocus",
+          "command": "DebugBuddy.analyzeSecurity",
+          "group": "debugbuddy@5"
         }
       ],
       "commandPalette": [
