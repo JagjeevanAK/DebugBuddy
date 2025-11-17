@@ -19,12 +19,9 @@ class ApiKeyCacheService implements ApiKeyCache {
   private initialized: boolean = false;
 
   private constructor() {
-    // Private constructor to enforce singleton pattern
+
   }
 
-  /**
-   * Get the singleton instance of the cache service
-   */
   public static getInstance(): ApiKeyCacheService {
     if (!ApiKeyCacheService.instance) {
       ApiKeyCacheService.instance = new ApiKeyCacheService();

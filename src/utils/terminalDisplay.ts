@@ -7,7 +7,6 @@ export const displayReview = (reviewResponse: any, fileName: any, skipWebview: b
     const useWebview = config.get<boolean>('useWebview', true);
     const autoShow = config.get<boolean>('webviewAutoShow', true);
     
-    // Validate input parameters
     if (!reviewResponse || typeof reviewResponse.text !== 'string') {
         console.error('DebugBuddy: Invalid review response provided to displayReview');
         DebugBuddyOutputChannel.appendLine('Error: Invalid review response received');
@@ -20,19 +19,15 @@ export const displayReview = (reviewResponse: any, fileName: any, skipWebview: b
         fileName = 'Unknown file';
     }
 
-    // Try to use webview first if enabled and available (and not explicitly skipped)
     if (useWebview && autoShow && !skipWebview) {
         try {
-            // Use the enhanced fallback mechanism
             webviewManager.displayResponseWithFallback(reviewResponse.text, fileName);
             return;
         } catch (error) {
             console.error('DebugBuddy: Failed to display in webview with fallback, using terminal:', error);
-            // Fall through to terminal display
         }
     }
 
-    // Terminal display (fallback or explicitly requested)
     try {
         DebugBuddyOutputChannel.clear();
         DebugBuddyOutputChannel.appendLine('DebugBuddy Code Review\n');
@@ -49,7 +44,6 @@ export const displayReview = (reviewResponse: any, fileName: any, skipWebview: b
         DebugBuddyOutputChannel.show(true);
     } catch (terminalError) {
         console.error('DebugBuddy: Critical error - even terminal display failed:', terminalError);
-        // Last resort: show error message
         const vscode = require('vscode');
         vscode.window.showErrorMessage(
             'DebugBuddy: Critical display error. Unable to show review results.',

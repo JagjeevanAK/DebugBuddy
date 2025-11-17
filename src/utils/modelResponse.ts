@@ -9,10 +9,6 @@ type Param  = {
     uri: vscode.Uri
 }
 
-/**
- * Enhanced model response function that uses the new JSON prompt system
- * for error analysis and debugging assistance
- */
 export const getModelResponse = async (
     { diagnostic, uri }: Param
 ) => {
