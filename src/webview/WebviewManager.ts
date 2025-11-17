@@ -62,7 +62,7 @@ export class WebviewManager {
             'DebugBuddy',
             vscode.ViewColumn.Beside,
             {
-                enableScripts: false,
+                enableScripts: true,
                 retainContextWhenHidden: true
             }
         );
@@ -83,6 +83,7 @@ export class WebviewManager {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/${isDark ? 'github-dark' : 'github'}.min.css">
     <style>
         body {
             font-family: var(--vscode-font-family);
@@ -113,23 +114,63 @@ export class WebviewManager {
         .content {
             max-width: 900px;
         }
+        .code-block-wrapper {
+            position: relative;
+            margin: 16px 0;
+        }
+        .copy-button {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background-color: ${isDark ? '#21262d' : '#ffffff'};
+            color: var(--vscode-button-foreground);
+            border: 1px solid var(--vscode-panel-border);
+            border-radius: 4px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 0.8em;
+            font-weight: 500;
+            transition: all 0.2s;
+            opacity: 0.7;
+            z-index: 10;
+        }
+        .copy-button:hover {
+            opacity: 1;
+            background-color: var(--vscode-button-background);
+            color: var(--vscode-button-foreground);
+            border-color: var(--vscode-button-background);
+        }
+        .copy-button:active {
+            transform: scale(0.95);
+        }
+        .copy-button.copied {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: white;
+            opacity: 1;
+        }
         pre {
             background-color: ${isDark ? '#0d1117' : '#f6f8fa'};
             border: 1px solid var(--vscode-panel-border);
             border-radius: 6px;
             padding: 16px;
+            padding-top: 40px;
             overflow-x: auto;
+            margin: 16px 0;
         }
         code {
-            font-family: var(--vscode-editor-font-family);
+            font-family: var(--vscode-editor-font-family), 'Courier New', monospace;
             font-size: 0.9em;
-            background-color: ${isDark ? '#161b22' : '#f0f0f0'};
-            padding: 2px 6px;
-            border-radius: 3px;
         }
         pre code {
             background: none;
             padding: 0;
+            display: block;
+        }
+        code:not(pre code) {
+            background-color: ${isDark ? '#161b22' : '#f0f0f0'};
+            padding: 2px 6px;
+            border-radius: 3px;
         }
         h2, h3, h4 {
             color: var(--vscode-titleBar-activeForeground);
@@ -144,15 +185,34 @@ export class WebviewManager {
         }
         a {
             color: var(--vscode-textLink-foreground);
+            text-decoration: none;
         }
         a:hover {
             color: var(--vscode-textLink-activeForeground);
+            text-decoration: underline;
         }
         blockquote {
             border-left: 4px solid var(--vscode-textBlockQuote-border);
             padding-left: 16px;
             margin-left: 0;
             color: var(--vscode-textBlockQuote-foreground);
+            background-color: ${isDark ? '#161b2233' : '#f6f8fa33'};
+            padding: 12px 16px;
+            border-radius: 4px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+        }
+        th, td {
+            border: 1px solid var(--vscode-panel-border);
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            background-color: ${isDark ? '#161b22' : '#f6f8fa'};
+            font-weight: 600;
         }
     </style>
 </head>
@@ -167,6 +227,39 @@ export class WebviewManager {
     <div class="content">
         ${renderedContent}
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+        // Apply syntax highlighting
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightElement(block);
+                
+                // Add copy button inside code block
+                const pre = block.parentElement;
+                const wrapper = document.createElement('div');
+                wrapper.className = 'code-block-wrapper';
+                
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'copy-button';
+                copyBtn.textContent = 'Copy';
+                copyBtn.onclick = function() {
+                    const code = block.textContent;
+                    navigator.clipboard.writeText(code).then(() => {
+                        copyBtn.textContent = 'Copied!';
+                        copyBtn.classList.add('copied');
+                        setTimeout(() => {
+                            copyBtn.textContent = 'Copy';
+                            copyBtn.classList.remove('copied');
+                        }, 2000);
+                    });
+                };
+                
+                pre.parentNode.insertBefore(wrapper, pre);
+                wrapper.appendChild(pre);
+                wrapper.appendChild(copyBtn);
+            });
+        });
+    </script>
 </body>
 </html>`;
     }

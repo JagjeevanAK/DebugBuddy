@@ -7,7 +7,7 @@ type Data = {
 
 export const getContextCode = (
     { document, diagnostic }: Data, 
-    contextLines = 5
+    contextLines = 10
 ) => {
     const errorLine = diagnostic.range.start.line;
     const startLine = Math.max(0, errorLine - contextLines);

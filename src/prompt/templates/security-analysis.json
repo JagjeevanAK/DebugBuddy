@@ -11,7 +11,7 @@
   },
   "config": {
     "default_values": {
-      "security_focus": "injection, authentication, authorization, data_protection"
+      "securityFocus": "injection, authentication, authorization, data_protection"
     }
   }
 }

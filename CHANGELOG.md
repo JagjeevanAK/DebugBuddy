@@ -4,6 +4,32 @@ All notable changes to the "DebugBuddy" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.5.0] - 2025-11-17
+
+### Fixed
+
+- Fixed code review functionality that was not sending code to AI due to template variable mismatches
+- Updated all prompt templates to use consistent camelCase naming for variables
+- Fixed PromptManager to properly map code context variables (selectedCode, surroundingCode, etc.)
+- Added proper default values support for all prompt templates
+
+### Improved
+
+- Enhanced hover error analysis with more surrounding code context (increased from 5 to 10 lines before/after error)
+- Improved code context formatting sent to AI with line prefixes showing error location
+- Added visual feedback in hover showing that code context is being analyzed
+- Enhanced webview with syntax highlighting using Highlight.js
+- Added copy button to code blocks for easy code snippet copying
+- Improved code block styling with better colors matching VS Code theme
+- Added support for 190+ programming languages with automatic syntax detection
+- Better visual design for code blocks with proper borders and spacing
+- Enhanced typography using VS Code editor fonts
+- Added table and blockquote styling improvements
+
+### Removed
+
+- Removed non-functional prompt settings commands from command palette
+
 ## [0.4.1] - 2025-11-17
 
 ### Improved

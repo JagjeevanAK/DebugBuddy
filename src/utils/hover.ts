@@ -8,17 +8,23 @@ export const OnErrorHover = vscode.languages.registerHoverProvider('*', {
         const diagnostic = diagnostics.find(d => d.range.contains(position));
 
         if (diagnostic) {
-            // Use the enhanced model response that leverages the new prompt system
+            const markdown = new vscode.MarkdownString();
+            markdown.appendMarkdown(`**Original Error:** ${diagnostic.message}\n\n`);
+            markdown.appendMarkdown(`*Analyzing with code context...*`);
+
+            const hoverInstance = new vscode.Hover(markdown);
+
             const aiRes = await getModelResponse({ diagnostic, uri: document.uri });
 
             if (aiRes) {
-                const markdown = new vscode.MarkdownString();
+                const updatedMarkdown = new vscode.MarkdownString();
+                updatedMarkdown.appendMarkdown(`**AI Analysis** *(with surrounding code context)*:\n\n${aiRes}`);
+                updatedMarkdown.appendMarkdown(`\n\n----\n\n**Original Error:** ${diagnostic.message}`);
 
-                markdown.appendMarkdown(`**AI Analysis:**\n\n ${aiRes}`);
-                markdown.appendMarkdown(`\n\n----\n\n**Original Error:** ${diagnostic.message}`);
-
-                return new vscode.Hover(markdown);
+                return new vscode.Hover(updatedMarkdown);
             }
+
+            return hoverInstance;
         }
         return null;
     }

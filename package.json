@@ -3,7 +3,7 @@
   "displayName": "Debug Buddy",
   "description": "Debug Buddy is your AI mentor — it helps you understand and resolve errors by offering thoughtful suggestions, encouraging you to think instead of instantly solving everything for you.",
   "publisher": "JagjeevanKashid",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -96,18 +96,6 @@
       {
         "command": "DebugBuddy.showErrorLog",
         "title": "Show DebugBuddy Error Log"
-      },
-      {
-        "command": "DebugBuddy.showPromptConfiguration",
-        "title": "Show DebugBuddy Prompt Configuration"
-      },
-      {
-        "command": "DebugBuddy.openPromptSettings",
-        "title": "Open DebugBuddy Prompt Settings"
-      },
-      {
-        "command": "DebugBuddy.validatePromptConfiguration",
-        "title": "Validate DebugBuddy Prompt Configuration"
       }
     ],
     "menus": {

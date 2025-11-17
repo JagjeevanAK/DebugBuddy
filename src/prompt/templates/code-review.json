@@ -13,9 +13,9 @@
   },
   "config": {
     "default_values": {
-      "focus_areas": "bugs, security, performance, maintainability",
-      "severity_threshold": "medium",
-      "experience_level": "intermediate"
+      "focusAreas": "bugs, security, performance, maintainability",
+      "severityThreshold": "medium",
+      "experienceLevel": "intermediate"
     }
   }
 }

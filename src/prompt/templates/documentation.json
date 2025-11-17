@@ -12,8 +12,8 @@
   },
   "config": {
     "default_values": {
-      "documentation_type": "api",
-      "target_audience": "developers"
+      "documentationType": "api",
+      "targetAudience": "developers"
     }
   }
 }

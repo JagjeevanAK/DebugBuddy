@@ -5,9 +5,6 @@ const path = require("path");
 const production = process.argv.includes('--production');
 const watch = process.argv.includes('--watch');
 
-/**
- * @type {import('esbuild').Plugin}
- */
 const esbuildProblemMatcherPlugin = {
 	name: 'esbuild-problem-matcher',
 
@@ -25,10 +22,6 @@ const esbuildProblemMatcherPlugin = {
 	},
 };
 
-/**
- * Plugin to copy template files to dist directory
- * @type {import('esbuild').Plugin}
- */
 const copyTemplatesPlugin = {
 	name: 'copy-templates',
 	setup(build) {
@@ -36,12 +29,10 @@ const copyTemplatesPlugin = {
 			const srcTemplates = path.join(__dirname, 'src', 'prompt', 'templates');
 			const distTemplates = path.join(__dirname, 'dist', 'templates');
 
-			// Create dist/templates directory if it doesn't exist
 			if (!fs.existsSync(distTemplates)) {
 				fs.mkdirSync(distTemplates, { recursive: true });
 			}
 
-			// Copy all JSON files from src/prompt/templates to dist/templates
 			if (fs.existsSync(srcTemplates)) {
 				const files = fs.readdirSync(srcTemplates);
 				files.forEach(file => {
@@ -73,7 +64,7 @@ async function main() {
 		logLevel: 'silent',
 		plugins: [
 			copyTemplatesPlugin,
-			/* add to the end of plugins array */
+
 			esbuildProblemMatcherPlugin,
 		],
 	});

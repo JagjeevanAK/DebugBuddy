@@ -12,8 +12,8 @@
   },
   "config": {
     "default_values": {
-      "refactoring_focus": "maintainability, readability, performance",
-      "experience_level": "intermediate"
+      "refactoringFocus": "maintainability, readability, performance",
+      "experienceLevel": "intermediate"
     }
   }
 }

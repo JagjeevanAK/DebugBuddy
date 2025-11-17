@@ -46,12 +46,23 @@ export class PromptManager {
         }
 
         const variables: VariableMap = {
-            code: context.selectedText || context.fullText,
-            language: context.language,
-            file_path: context.filePath,
-            error_message: context.errorMessage || '',
-            error_line: context.lineNumber?.toString() || ''
+            selectedCode: context.selectedText || context.fullText,
+            surroundingCode: context.surroundingCode || context.selectedText || context.fullText,
+            language: context.language || 'plaintext',
+            filePath: context.filePath || 'unknown',
+            errorMessage: context.errorMessage || '',
+            errorLine: context.lineNumber?.toString() || '',
+            stackTrace: '',
+            errorType: 'runtime'
         };
+
+        if (prompt.config?.default_values) {
+            for (const [key, value] of Object.entries(prompt.config.default_values)) {
+                if (!variables[key]) {
+                    variables[key] = value;
+                }
+            }
+        }
 
         return {
             content: this.substituteVariables(prompt.template, variables),

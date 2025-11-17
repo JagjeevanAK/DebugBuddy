@@ -22,19 +22,21 @@ export const getModelResponse = async (
         const errDetails = errorDetails({uri, diagnostic});
 
         if (errDetails) {
+            const surroundingCodeText = Array.isArray(errDetails.surroundingCode) 
+                ? errDetails.surroundingCode.map(line => `${line.prefix}${line.text}`).join('\n')
+                : String(errDetails.surroundingCode || '');
+
+            const errorLineText = errDetails.errorLine ? errDetails.errorLine.text : '';
+
             const codeContext: CodeContext = {
-                selectedText: errDetails.errorLine ? errDetails.errorLine.text : '',
-                fullText: Array.isArray(errDetails.surroundingCode) 
-                    ? errDetails.surroundingCode.map(line => line.text).join('\n')
-                    : String(errDetails.surroundingCode || ''),
+                selectedText: errorLineText,
+                fullText: surroundingCodeText,
                 filePath: errDetails.fileName,
                 language: errDetails.fileLanguage,
                 errorMessage: errDetails.errorMessage,
                 lineNumber: errDetails.lineNumber,
                 columnNumber: errDetails.columnNumber,
-                surroundingCode: Array.isArray(errDetails.surroundingCode) 
-                    ? errDetails.surroundingCode.map(line => line.text).join('\n')
-                    : String(errDetails.surroundingCode || ''),
+                surroundingCode: surroundingCodeText,
                 diagnostics: [diagnostic]
             };
 

@@ -16,7 +16,7 @@
   },
   "config": {
     "default_values": {
-      "experience_level": "intermediate"
+      "experienceLevel": "intermediate"
     }
   }
 }

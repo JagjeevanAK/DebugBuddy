@@ -12,8 +12,8 @@
   },
   "config": {
     "default_values": {
-      "performance_focus": "cpu, memory, io",
-      "target_metrics": "latency, throughput, memory_usage"
+      "performanceFocus": "cpu, memory, io",
+      "targetMetrics": "latency, throughput, memory_usage"
     }
   }
 }
