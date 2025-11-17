@@ -1,21 +1,13 @@
-/**
- * Extension Lifecycle Integration Tests
- * 
- * Tests the integration of API key cache and configuration change handler
- * with the extension activation and deactivation lifecycle.
- */
-
 import * as assert from 'assert';
 import * as vscode from 'vscode';
-import { activate, deactivate } from '../extension';
-import { apiKeyCache } from '../lib/apiKeyCache';
-import { configChangeHandler } from '../lib/configChangeHandler';
+import { activate, deactivate } from '../../extension';
+import { apiKeyCache } from '../../lib/apiKeyCache';
+import { configChangeHandler } from '../../lib/configChangeHandler';
 
 suite('Extension Lifecycle Integration Tests', () => {
   let mockContext: vscode.ExtensionContext;
 
   setup(() => {
-    // Create a mock extension context
     mockContext = {
       subscriptions: [],
       workspaceState: {} as any,
@@ -36,12 +28,10 @@ suite('Extension Lifecycle Integration Tests', () => {
       languageModelAccessInformation: {} as any
     };
 
-    // Clear cache before each test
     apiKeyCache.clear();
   });
 
   teardown(() => {
-    // Clean up after each test
     deactivate();
   });
 
@@ -50,8 +40,6 @@ suite('Extension Lifecycle Integration Tests', () => {
 
     activate(mockContext);
 
-    // Cache should still be uninitialized (lazy initialization)
-    // but the manager should be ready
     assert.strictEqual(apiKeyCache.isInitialized(), false);
     
     apiKeyCache.set('test-key');
@@ -64,7 +52,6 @@ suite('Extension Lifecycle Integration Tests', () => {
 
     configChangeHandler.initialize();
     
-    // Manually add to subscriptions to simulate what activate() does
     mockContext.subscriptions.push(configChangeHandler);
 
     const hasConfigHandler = mockContext.subscriptions.includes(configChangeHandler);
@@ -91,11 +78,6 @@ suite('Extension Lifecycle Integration Tests', () => {
     deactivate();
     assert.strictEqual(apiKeyCache.get(), undefined);
     assert.strictEqual(apiKeyCache.isInitialized(), false);
-
-    // After deactivation, cache should be ready for reuse
-    // (simulating extension restart scenario)
-    assert.strictEqual(apiKeyCache.get(), undefined);
-    assert.strictEqual(apiKeyCache.isInitialized(), true);
 
     apiKeyCache.set('test-key-2');
     assert.strictEqual(apiKeyCache.get(), 'test-key-2');

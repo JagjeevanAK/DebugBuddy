@@ -1,6 +1,43 @@
-/**
- * Core types and interfaces for the JSON prompt system
- */
+export enum UserAction {
+    CODE_REVIEW = 'code_review',
+    DEBUG_ERROR = 'debug_error',
+    REFACTOR = 'refactor',
+    GENERATE_DOCS = 'generate_docs',
+    SECURITY_ANALYSIS = 'security_analysis',
+    PERFORMANCE_ANALYSIS = 'performance_analysis',
+    EXPLAIN_CODE = 'explain_code'
+}
+
+export interface CodeContext {
+    filePath?: string;
+    lineNumber?: number;
+    columnNumber?: number;
+    selectedText?: string;
+    fullText?: string;
+    surroundingCode?: string;
+    language?: string;
+    errorMessage?: string;
+    diagnostics?: any[];
+}
+
+export interface VariableMap {
+    [key: string]: any;
+}
+
+export interface PromptMetadata {
+    promptId?: string;
+    action?: UserAction;
+    language?: string;
+    supported_languages?: string[];
+    required_context?: string[];
+    performance_notes?: string;
+}
+
+export interface ProcessedPrompt {
+    content: object;
+    metadata: PromptMetadata;
+    variables_used: string[];
+}
 
 export enum PromptCategory {
     CODE_REVIEW = 'code_review',
@@ -11,16 +48,6 @@ export enum PromptCategory {
     PERFORMANCE_ANALYSIS = 'performance_analysis',
     CODE_EXPLANATION = 'code_explanation',
     GENERAL = 'general'
-}
-
-export enum UserAction {
-    CODE_REVIEW = 'code_review',
-    DEBUG_ERROR = 'debug_error',
-    REFACTOR = 'refactor',
-    GENERATE_DOCS = 'generate_docs',
-    SECURITY_ANALYSIS = 'security_analysis',
-    PERFORMANCE_ANALYSIS = 'performance_analysis',
-    EXPLAIN_CODE = 'explain_code'
 }
 
 export interface OutputFormat {
@@ -48,13 +75,6 @@ export interface PromptConfig {
     severity_threshold?: string;
 }
 
-export interface PromptMetadata {
-    supported_languages?: string[];
-    required_context?: string[];
-    performance_notes?: string;
-    legacy?: boolean;
-}
-
 export interface JsonPrompt {
     id: string;
     name: string;
@@ -66,72 +86,6 @@ export interface JsonPrompt {
     last_modified?: string;
     template: PromptTemplate;
     config: PromptConfig;
-    metadata?: PromptMetadata;
+    metadata?: Record<string, any>;
     schema_version: string;
-}
-
-export interface VariableMap {
-    [key: string]: any;
-}
-
-export interface ProcessedPrompt {
-    content: object;
-    metadata: PromptMetadata;
-    variables_used: string[];
-}
-
-export interface ValidationResult {
-    isValid: boolean;
-    errors: string[];
-    warnings: string[];
-}
-
-export interface PromptContext {
-    action: UserAction;
-    language: string;
-    hasError: boolean;
-    errorType?: string;
-    codeSelection?: string;
-    fileType: string;
-    projectContext?: ProjectContext;
-}
-
-export interface ProjectContext {
-    framework?: string;
-    projectType?: string;
-    customRules?: string[];
-}
-
-export interface CodeContext {
-    filePath?: string;
-    lineNumber?: number;
-    columnNumber?: number;
-    selectedText?: string;
-    fullText?: string;
-    surroundingCode?: string;
-    language?: string;
-    errorMessage?: string;
-    diagnostics?: any[];
-}
-
-export interface GlobalPromptSettings {
-    experienceLevel: 'beginner' | 'intermediate' | 'advanced';
-    maxSuggestions: number;
-    includeExplanations: boolean;
-    customFocusAreas: string[];
-    outputVerbosity: 'minimal' | 'standard' | 'detailed';
-}
-
-export enum PromptError {
-    TEMPLATE_PARSE_ERROR = 'template_parse_error',
-    VARIABLE_SUBSTITUTION_ERROR = 'variable_substitution_error',
-    VALIDATION_ERROR = 'validation_error',
-    CONFIGURATION_ERROR = 'configuration_error',
-    PROMPT_NOT_FOUND = 'prompt_not_found'
-}
-
-export interface FallbackStrategy {
-    useSimplePrompt: boolean;
-    fallbackPromptId?: string;
-    errorMessage?: string;
 }

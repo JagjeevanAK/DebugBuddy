@@ -15,16 +15,13 @@ import {
 import { apiKeyCache } from "./lib/apiKeyCache";
 import { configChangeHandler } from "./lib/configChangeHandler";
 import { webviewManager } from "./webview/WebviewManager";
-import { ConfigurationManager } from "./prompt/ConfigurationManager";
 import { PromptManager } from "./prompt/PromptManager";
 
 export async function activate(context: vscode.ExtensionContext) {
 
 	console.log('Congratulations, your extension "DebugBuddy" is now active!');
 
-	// Cache uses lazy initialization; accessing it will trigger initialization. Avoid eager setup to reduce startup impact.
 	try {
-		// Test cache initialization by checking if it's accessible
 		apiKeyCache.isInitialized();
 		console.log('DebugBuddy: API key cache manager initialized successfully');
 	} catch (error) {
@@ -48,14 +45,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		console.log('DebugBuddy: Extension will continue with terminal display fallback');
 	}
 
-	try {
-		const configManager = ConfigurationManager.getInstance();
-		await configManager.migrateConfiguration();
-		console.log('DebugBuddy: Configuration manager initialized and migrated successfully');
-	} catch (error) {
-		console.error('DebugBuddy: Error initializing configuration manager:', error);
-		console.log('DebugBuddy: Extension will continue with default configuration');
-	}
+
 
 	try {
 		const promptManager = PromptManager.getInstance();
@@ -133,31 +123,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		vscode.commands.registerCommand("DebugBuddy.showErrorLog", () => {
 			vscode.window.showInformationMessage('Error logging has been simplified. Check the Output panel for DebugBuddy logs.');
 		}),
-		vscode.commands.registerCommand("DebugBuddy.showPromptConfiguration", () => {
-			const configManager = ConfigurationManager.getInstance();
-			const summary = configManager.getConfigurationSummary();
-			
-			vscode.window.showInformationMessage(
-				'DebugBuddy Prompt Configuration',
-				'Show Details',
-				'Reset to Defaults'
-			).then(selection => {
-				if (selection === 'Show Details') {
-					vscode.window.showInformationMessage(summary, { modal: true });
-				} else if (selection === 'Reset to Defaults') {
-					vscode.window.showWarningMessage(
-						'This will reset all prompt configuration to default values. Continue?',
-						'Yes',
-						'No'
-					).then(async (confirm) => {
-						if (confirm === 'Yes') {
-							await configManager.resetToDefaults();
-							vscode.window.showInformationMessage('DebugBuddy: Prompt configuration reset to defaults');
-						}
-					});
-				}
-			});
-		}),
+
 		vscode.commands.registerCommand("DebugBuddy.testPromptSystem", async () => {
 			try {
 				const promptManager = PromptManager.getInstance();
@@ -170,50 +136,6 @@ export async function activate(context: vscode.ExtensionContext) {
 				);
 			} catch (error) {
 				vscode.window.showErrorMessage(`Prompt System Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
-			}
-		}),
-		vscode.commands.registerCommand("DebugBuddy.openPromptSettings", () => {
-			// Open VS Code settings focused on DebugBuddy prompt settings
-			vscode.commands.executeCommand('workbench.action.openSettings', 'DebugBuddy.prompts');
-		}),
-		vscode.commands.registerCommand("DebugBuddy.validatePromptConfiguration", async () => {
-			try {
-				const configManager = ConfigurationManager.getInstance();
-				const validationResult = configManager.validateConfiguration();
-				
-				if (validationResult.isValid) {
-					vscode.window.showInformationMessage(
-						'DebugBuddy: Prompt configuration is valid!',
-						'Show Details'
-					).then(selection => {
-						if (selection === 'Show Details') {
-							const summary = configManager.getConfigurationSummary();
-							vscode.window.showInformationMessage(summary, { modal: true });
-						}
-					});
-				} else {
-					const errorMessage = `Configuration validation failed:\n${validationResult.errors.join('\n')}`;
-					const warningMessage = validationResult.warnings.length > 0 
-						? `\n\nWarnings:\n${validationResult.warnings.join('\n')}` 
-						: '';
-					
-					vscode.window.showErrorMessage(
-						errorMessage + warningMessage,
-						'Reset to Defaults',
-						'Open Settings'
-					).then(async (selection) => {
-						if (selection === 'Reset to Defaults') {
-							await configManager.resetToDefaults();
-							vscode.window.showInformationMessage('DebugBuddy: Configuration reset to defaults');
-						} else if (selection === 'Open Settings') {
-							vscode.commands.executeCommand('workbench.action.openSettings', 'DebugBuddy.prompts');
-						}
-					});
-				}
-			} catch (error) {
-				vscode.window.showErrorMessage(
-					`DebugBuddy: Error validating configuration: ${error instanceof Error ? error.message : 'Unknown error'}`
-				);
 			}
 		})
 	);
@@ -239,13 +161,5 @@ export function deactivate() {
 		console.log('DebugBuddy: Webview manager disposed during deactivation');
 	} catch (error) {
 		console.error('DebugBuddy: Error disposing webview manager during deactivation:', error);
-	}
-
-	try {
-		const configManager = ConfigurationManager.getInstance();
-		configManager.dispose();
-		console.log('DebugBuddy: Configuration manager disposed during deactivation');
-	} catch (error) {
-		console.error('DebugBuddy: Error disposing configuration manager during deactivation:', error);
 	}
 }

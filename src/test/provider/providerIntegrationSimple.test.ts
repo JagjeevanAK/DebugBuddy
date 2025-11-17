@@ -1,10 +1,5 @@
-/**
- * Simple integration test for provider prompt handling
- * Tests the core logic without requiring VS Code test environment
- */
-
 import * as assert from 'assert';
-import { ProcessedPrompt } from '../prompt/types';
+import { ProcessedPrompt } from '../../prompt/types';
 
 const mockProcessedPrompt: ProcessedPrompt = {
     content: {
@@ -29,8 +24,6 @@ const mockProcessedPrompt: ProcessedPrompt = {
     variables_used: ['language', 'code', 'filePath']
 };
 
-// Using JSON prompts only - legacy prompts removed
-
 suite('Provider Integration - Core Logic', () => {
     
     test('ProcessedPrompt structure validation', () => {
@@ -41,8 +34,6 @@ suite('Provider Integration - Core Logic', () => {
         assert.strictEqual(Array.isArray(mockProcessedPrompt.variables_used), true);
         assert.strictEqual(mockProcessedPrompt.variables_used.length, 3);
     });
-
-    // Using JSON prompts only - legacy prompt tests removed
 
     test('Prompt processing logic simulation', () => {
         function processPromptLogic(prompt: any): { text: string; type?: string; hasContext: boolean } {
@@ -75,7 +66,6 @@ suite('Provider Integration - Core Logic', () => {
                     } else {
                         promptText = JSON.stringify(content, null, 2);
                     }
-                // JSON prompts only - legacy prompt handling removed
                 } else {
                     promptText = JSON.stringify(prompt);
                 }
@@ -94,8 +84,6 @@ suite('Provider Integration - Core Logic', () => {
         assert.strictEqual(processedResult.type, 'code_review');
         assert.strictEqual(processedResult.hasContext, true);
 
-        // JSON prompts only - legacy prompt processing removed
-
         const stringResult = processPromptLogic('Simple test prompt');
         assert.strictEqual(stringResult.text, 'Simple test prompt');
         assert.strictEqual(stringResult.type, undefined);
@@ -109,8 +97,6 @@ suite('Provider Integration - Core Logic', () => {
         assert.strictEqual(deserialized.content.task, 'code_review');
         assert.strictEqual(deserialized.metadata.performance_notes, 'Fast processing');
         assert.deepStrictEqual(deserialized.variables_used, ['language', 'code', 'filePath']);
-
-        // JSON prompts only - legacy prompt serialization removed
     });
 
     test('Provider response structure', () => {
@@ -130,15 +116,12 @@ suite('Provider Integration - Core Logic', () => {
     test('Error handling for malformed prompts', () => {
         const malformedPrompt = {
             someField: 'value',
-            // Missing required fields
         };
 
-        // Should be able to serialize malformed prompts
         const serialized = JSON.stringify(malformedPrompt);
         assert.ok(serialized.includes('someField'));
         assert.ok(serialized.includes('value'));
 
-        // Should handle null/undefined gracefully
         assert.strictEqual(String(null), 'null');
         assert.strictEqual(String(undefined), 'undefined');
     });

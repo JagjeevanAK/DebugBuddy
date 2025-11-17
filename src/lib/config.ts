@@ -12,7 +12,18 @@ export function getApiKey(): string | undefined {
             }
         }
         
-        const apiKey = vscode.workspace.getConfiguration('DebugBuddy').get('apiKey') as string | undefined;
+        let apiKey: string | undefined;
+        try {
+            apiKey = vscode.workspace.getConfiguration('DebugBuddy').get('apiKey') as string | undefined;
+        } catch (error) {
+            console.error('DebugBuddy: Error getting configuration, attempting fallback:', error);
+            try {
+                apiKey = vscode.workspace.getConfiguration('DebugBuddy').get('apiKey') as string | undefined;
+            } catch (fallbackError) {
+                console.error('DebugBuddy: Fallback configuration access also failed:', fallbackError);
+                return undefined;
+            }
+        }
         
         try {
             apiKeyCache.set(apiKey);

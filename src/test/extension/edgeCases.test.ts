@@ -1,31 +1,18 @@
-/**
- * Edge Cases and Error Scenarios Tests
- * 
- * Tests edge cases and error scenarios for the API key caching system:
- * - Behavior when no API key is configured
- * - Rapid configuration changes
- * - Extension restart scenarios
- * 
- * Requirements: 3.1, 3.2, 3.3, 4.2
- */
-
 import * as assert from 'assert';
 import * as vscode from 'vscode';
-import { getApiKey } from '../lib/config';
-import { apiKeyCache } from '../lib/apiKeyCache';
-import { configChangeHandler } from '../lib/configChangeHandler';
-import { activate, deactivate } from '../extension';
+import { getApiKey } from '../../lib/config';
+import { apiKeyCache } from '../../lib/apiKeyCache';
+import { configChangeHandler } from '../../lib/configChangeHandler';
+import { activate, deactivate } from '../../extension';
 
 suite('Edge Cases and Error Scenarios Tests', () => {
 
   setup(() => {
-    // Clear cache before each test
     apiKeyCache.clear();
     configChangeHandler.dispose();
   });
 
   teardown(() => {
-    // Clean up after each test
     configChangeHandler.dispose();
     apiKeyCache.clear();
   });
@@ -33,7 +20,6 @@ suite('Edge Cases and Error Scenarios Tests', () => {
   suite('No API Key Configured Tests', () => {
     
     test('should cache undefined state when no API key is configured', () => {
-      // Mock VSCode configuration to return undefined
       const originalGetConfiguration = vscode.workspace.getConfiguration;
       vscode.workspace.getConfiguration = (section?: string) => ({
         get: (key: string) => undefined,
@@ -45,10 +31,8 @@ suite('Edge Cases and Error Scenarios Tests', () => {
       try {
         assert.strictEqual(apiKeyCache.isInitialized(), false);
         
-        // Call getApiKey with no configured key
         const result = getApiKey();
         
-        // Should return undefined and cache the undefined state
         assert.strictEqual(result, undefined);
         assert.strictEqual(apiKeyCache.isInitialized(), true);
         assert.strictEqual(apiKeyCache.get(), undefined);
@@ -59,7 +43,6 @@ suite('Edge Cases and Error Scenarios Tests', () => {
     });
 
     test('should maintain existing error handling behavior when no API key is set', () => {
-      // Mock VSCode configuration to return undefined
       const originalGetConfiguration = vscode.workspace.getConfiguration;
       vscode.workspace.getConfiguration = (section?: string) => ({
         get: (key: string) => undefined,
@@ -69,7 +52,6 @@ suite('Edge Cases and Error Scenarios Tests', () => {
       } as any);
 
       try {
-        // Multiple calls should consistently return undefined
         const result1 = getApiKey();
         const result2 = getApiKey();
         const result3 = getApiKey();
@@ -78,7 +60,6 @@ suite('Edge Cases and Error Scenarios Tests', () => {
         assert.strictEqual(result2, undefined);
         assert.strictEqual(result3, undefined);
         
-        // Cache should remain initialized with undefined value
         assert.strictEqual(apiKeyCache.isInitialized(), true);
         assert.strictEqual(apiKeyCache.get(), undefined);
         
@@ -88,10 +69,8 @@ suite('Edge Cases and Error Scenarios Tests', () => {
     });
 
     test('should update cache from undefined to new key value when user sets API key for first time', () => {
-      // Initialize configuration change handler
       configChangeHandler.initialize();
       
-      // Start with no API key configured
       const originalGetConfiguration = vscode.workspace.getConfiguration;
       let configuredApiKey: string | undefined = undefined;
       
@@ -103,7 +82,6 @@ suite('Edge Cases and Error Scenarios Tests', () => {
       } as any);
 
       try {
-        // First call with no API key
         const result1 = getApiKey();
         assert.strictEqual(result1, undefined);
         assert.strictEqual(apiKeyCache.get(), undefined);
@@ -111,19 +89,15 @@ suite('Edge Cases and Error Scenarios Tests', () => {
         
         configuredApiKey = 'newly-set-api-key';
         
-        // Mock configuration change event
         const mockEvent: vscode.ConfigurationChangeEvent = {
           affectsConfiguration: (section: string) => section === 'DebugBuddy.apiKey'
         };
         
-        // Trigger configuration change
         configChangeHandler.onConfigurationChanged(mockEvent);
         
-        // Cache should now contain the new key
         assert.strictEqual(apiKeyCache.get(), 'newly-set-api-key');
         assert.strictEqual(apiKeyCache.isInitialized(), true);
         
-        // Subsequent getApiKey calls should return the cached value
         const result2 = getApiKey();
         assert.strictEqual(result2, 'newly-set-api-key');
         
@@ -133,7 +107,6 @@ suite('Edge Cases and Error Scenarios Tests', () => {
     });
 
     test('should handle empty string API key as valid configuration', () => {
-      // Mock VSCode configuration to return empty string
       const originalGetConfiguration = vscode.workspace.getConfiguration;
       vscode.workspace.getConfiguration = (section?: string) => ({
         get: (key: string) => key === 'apiKey' ? '' : undefined,
@@ -145,7 +118,6 @@ suite('Edge Cases and Error Scenarios Tests', () => {
       try {
         const result = getApiKey();
         
-        // Empty string should be cached as a valid value
         assert.strictEqual(result, '');
         assert.strictEqual(apiKeyCache.isInitialized(), true);
         assert.strictEqual(apiKeyCache.get(), '');

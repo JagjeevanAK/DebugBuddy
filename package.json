@@ -309,7 +309,7 @@
     "watch:esbuild": "node esbuild.js --watch",
     "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
     "package": "pnpm run check-types && pnpm run lint && node esbuild.js --production",
-    "compile-tests": "tsc -p . --outDir out && cp -r src/prompt/templates/*.json out/prompt/templates/",
+    "compile-tests": "tsc -p . --outDir out && mkdir -p out/prompt/templates && cp -r src/prompt/templates/*.json out/prompt/templates/",
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
     "check-types": "tsc --noEmit",
@@ -317,7 +317,6 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/highlight.js": "^10.1.0",
     "@types/markdown-it": "^14.1.2",
     "@types/mocha": "^10.0.10",
     "@types/node": "^20.19.9",
@@ -328,7 +327,6 @@
     "@vscode/test-electron": "^2.5.2",
     "esbuild": "^0.25.3",
     "eslint": "^9.25.1",
-    "highlight.js": "^11.11.1",
     "markdown-it": "^14.1.0",
     "npm-run-all": "^4.1.5",
     "typescript": "^5.8.3"
@@ -339,8 +337,6 @@
     "@ai-sdk/groq": "^2.0.2",
     "@ai-sdk/openai": "^1.3.23",
     "@ai-sdk/xai": "^1.2.18",
-    "ai": "^4.3.19",
-    "ajv": "^8.17.1",
-    "ajv-formats": "^3.0.1"
+    "ai": "^4.3.19"
   }
 }

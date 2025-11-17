@@ -1,10 +1,5 @@
-/**
- * Final integration test for LLM provider updates
- * Verifies that all providers handle structured prompts correctly
- */
-
 import * as assert from 'assert';
-import { ProcessedPrompt } from '../prompt/types';
+import { ProcessedPrompt } from '../../prompt/types';
 
 suite('Provider Final Integration Test', () => {
     
@@ -94,7 +89,7 @@ suite('Provider Final Integration Test', () => {
         assert.strictEqual(validProviders.length, 4);
         assert.ok(validProviders.includes('Anthropic'));
         assert.ok(validProviders.includes('OpenAI'));
-        assert.ok(validProviders.includes('Gemini')); // Note: keeping the typo as it exists
+        assert.ok(validProviders.includes('Gemini'));
         assert.ok(validProviders.includes('Xai'));
         
         assert.ok(!validProviders.includes('InvalidProvider'));

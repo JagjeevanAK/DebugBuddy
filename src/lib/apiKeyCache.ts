@@ -1,11 +1,3 @@
-/**
- * API Key Cache Service
- * 
- * Singleton service that caches the API key in memory to avoid repeated
- * queries to VSCode settings. Handles undefined/null values properly
- * and tracks initialization state.
- */
-
 interface ApiKeyCache {
   get(): string | undefined;
   set(key: string | undefined): void;
@@ -29,11 +21,6 @@ class ApiKeyCacheService implements ApiKeyCache {
     return ApiKeyCacheService.instance;
   }
 
-  /**
-   * Get the cached API key
-   * @returns The cached API key or undefined if not set or not initialized
-   * @throws Error if cache access fails
-   */
   public get(): string | undefined {
     try {
       return this.apiKey;
@@ -43,11 +30,6 @@ class ApiKeyCacheService implements ApiKeyCache {
     }
   }
 
-  /**
-   * Set the API key in cache
-   * @param key The API key to cache (can be undefined/null)
-   * @throws Error if cache update fails
-   */
   public set(key: string | undefined): void {
     try {
       this.apiKey = key;
@@ -58,10 +40,6 @@ class ApiKeyCacheService implements ApiKeyCache {
     }
   }
 
-  /**
-   * Clear the cached API key and reset initialization state
-   * @throws Error if cache clear fails
-   */
   public clear(): void {
     try {
       this.apiKey = undefined;
@@ -72,11 +50,6 @@ class ApiKeyCacheService implements ApiKeyCache {
     }
   }
 
-  /**
-   * Check if the cache has been initialized
-   * @returns true if the cache has been initialized, false otherwise
-   * @throws Error if initialization state check fails
-   */
   public isInitialized(): boolean {
     try {
       return this.initialized;

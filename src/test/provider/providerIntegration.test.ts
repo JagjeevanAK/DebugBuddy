@@ -1,12 +1,5 @@
-/**
- * Test suite for LLM provider integration with structured JSON prompts
- * 
- * Note: These tests focus on testing the prompt processing logic and structure
- * without making actual API calls to LLM providers.
- */
-
 import * as assert from 'assert';
-import { ProcessedPrompt } from '../prompt/types';
+import { ProcessedPrompt } from '../../prompt/types';
 
 suite('LLM Provider Integration Tests', () => {
 
@@ -77,7 +70,7 @@ suite('LLM Provider Integration Tests', () => {
         test('should have correct provider names', () => {
             const expectedProviders = [
                 'Anthropic',
-                'Gemini', // Intentionally preserving this string to match the legacy provider identifier used elsewhere in tests/fixtures
+                'Gemini',
                 'OpenAI',
                 'Xai'
             ];
@@ -90,8 +83,6 @@ suite('LLM Provider Integration Tests', () => {
 
         test('should throw error for unknown provider', () => {
             try {
-                // This would normally be tested with actual getTool call
-                // but we're testing the error condition logic
                 const unknownProvider = 'UnknownProvider';
                 assert.ok(!['Anthropic', 'Gemini', 'OpenAI', 'Xai'].includes(unknownProvider));
             } catch (error) {
@@ -103,7 +94,6 @@ suite('LLM Provider Integration Tests', () => {
     suite('Error Handling', () => {
         test('should handle malformed prompts gracefully', () => {
             const malformedPrompt = {
-                // Missing required fields
                 someField: 'value'
             };
             

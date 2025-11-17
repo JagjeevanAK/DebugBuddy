@@ -1,10 +1,9 @@
 import * as assert from 'assert';
-import { apiKeyCache } from '../lib/apiKeyCache';
+import { apiKeyCache } from '../../lib/apiKeyCache';
 
 suite('API Key Cache Service Tests', () => {
   
   setup(() => {
-    // Clear cache before each test
     apiKeyCache.clear();
   });
 
@@ -39,12 +38,10 @@ suite('API Key Cache Service Tests', () => {
   test('should clear cache and reset initialization state', () => {
     const testKey = 'test-api-key-456';
     
-    // Set a key first
     apiKeyCache.set(testKey);
     assert.strictEqual(apiKeyCache.isInitialized(), true);
     assert.strictEqual(apiKeyCache.get(), testKey);
     
-    // Clear the cache
     apiKeyCache.clear();
     assert.strictEqual(apiKeyCache.isInitialized(), false);
     assert.strictEqual(apiKeyCache.get(), undefined);
@@ -54,14 +51,11 @@ suite('API Key Cache Service Tests', () => {
     const testKey1 = 'test-key-1';
     const testKey2 = 'test-key-2';
     
-    // Set key using one reference
     apiKeyCache.set(testKey1);
     
-    // Import and use another reference - should be the same instance
-    const { apiKeyCache: anotherRef } = require('../lib/apiKeyCache');
+    const { apiKeyCache: anotherRef } = require('../../lib/apiKeyCache');
     assert.strictEqual(anotherRef.get(), testKey1);
     
-    // Update using the other reference
     anotherRef.set(testKey2);
     assert.strictEqual(apiKeyCache.get(), testKey2);
   });
@@ -97,11 +91,8 @@ suite('API Key Cache Service Tests', () => {
   });
 
   test('should provide meaningful error messages when operations fail', () => {
-    // Since the current implementation is simple and unlikely to fail,
-    // we test that the error handling structure is in place
     const testKey = 'error-test-key';
     
-    // These should work normally
     apiKeyCache.set(testKey);
     assert.strictEqual(apiKeyCache.get(), testKey);
     assert.strictEqual(apiKeyCache.isInitialized(), true);
